@@ -130,9 +130,19 @@ export default class LoadNetwork extends React.Component {
       progressError: false
     });
 
-    fetch(`/navigator/${jsonFile}`)
+    const url = 'http://127.0.0.1:5000';
+    const getBody = jsonFile;
+    const requestMetaData = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: getBody
+    };
+
+    fetch(url, requestMetaData)
         .then(res => res.text())
-        .then(file => this.loadNetwork(file, filename))
+        .then(file => this.loadNetwork(file))
         .catch((err) => {
           this.setState(errorState(err));
           console.log(err);
