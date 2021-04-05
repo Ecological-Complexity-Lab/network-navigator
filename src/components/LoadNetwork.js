@@ -104,7 +104,7 @@ export default class LoadNetwork extends React.Component {
   };
 
   loadExampleData = () => {
-    const filename = "citation_data.ftree";
+    const filename = "multilayer_data.ftree";
 
     this.setState({
       progressVisible: true,
@@ -121,6 +121,23 @@ export default class LoadNetwork extends React.Component {
         console.log(err);
       });
   };
+
+  loadJsonFile = (jsonFile) =>{
+    this.setState({
+      progressVisible: true,
+      progressValue: 1,
+      progressLabel: "Reading file",
+      progressError: false
+    });
+
+    fetch(`/navigator/${jsonFile}`)
+        .then(res => res.text())
+        .then(file => this.loadNetwork(file, filename))
+        .catch((err) => {
+          this.setState(errorState(err));
+          console.log(err);
+        });
+  }
 
   render() {
     const { progressError, progressLabel, progressValue, progressVisible, ftree } = this.state;
@@ -211,6 +228,20 @@ export default class LoadNetwork extends React.Component {
               htmlFor="upload"
             />
           </Step.Group>
+
+          <Divider horizontal style={{ margin: "20px 100px 30px 100px" }} content="Or"/>
+
+          <Step.Group>
+            <Step
+                disabled={disabled}
+                icon="book"
+                title="Load json file"
+                description="Multilayer network"
+                link
+                htmlFor="uploadJson"
+            />
+          </Step.Group>
+
           <input
             style={{ visibility: "hidden" }}
             type='file'
@@ -220,6 +251,15 @@ export default class LoadNetwork extends React.Component {
             ref={input => this.input = input}
           />
 
+
+          <input
+              style={{ visibility: "hidden" }}
+              type='file'
+              id='uploadJson'
+              onChange={() => this.loadJsonFile(this.input.files[0])}
+              accept=".json"
+              ref={input => this.input = input}
+          />
           {progressVisible &&
           <div style={{ padding: "50px 100px 0" }}>
             <Progress
