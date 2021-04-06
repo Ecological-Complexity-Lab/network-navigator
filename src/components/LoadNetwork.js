@@ -133,11 +133,14 @@ export default class LoadNetwork extends React.Component {
     const url = 'http://127.0.0.1:5000';
     const getBody = jsonFile;
     const requestMetaData = {
-      method: 'GET',
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
-      body: getBody
+      body: getBody,
+      credentials: 'include',
+      crossDomain: true
     };
 
     fetch(url, requestMetaData)
@@ -241,13 +244,15 @@ export default class LoadNetwork extends React.Component {
 
           <Divider horizontal style={{ margin: "20px 100px 30px 100px" }} content="Or"/>
 
-          <Step.Group>
+          <Step.Group style={{display: 'inline-flex'}}>
             <Step
                 disabled={disabled}
+                as="label"
                 icon="book"
                 title="Load json file"
                 description="Multilayer network"
                 link
+                active={!disabled}
                 htmlFor="uploadJson"
             />
           </Step.Group>
