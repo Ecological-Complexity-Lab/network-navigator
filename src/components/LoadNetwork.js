@@ -1,13 +1,13 @@
 import localforage from "localforage";
 import "whatwg-fetch";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { Container, Divider, Image, Label, Progress, Segment, Step } from "semantic-ui-react";
 import Background from "../images/Background.svg";
 import parseFTree from "../io/ftree";
 import networkFromFTree from "../io/network-from-ftree";
 import parseFile from "../io/parse-file";
-
+// import parseJson from "../io/parse-json";
 
 const errorState = err => ({
   progressError: true,
@@ -104,7 +104,7 @@ export default class LoadNetwork extends React.Component {
   };
 
   loadExampleData = () => {
-    const filename = "multilayer_data.ftree";
+    const filename = "citation_data.ftree";
 
     this.setState({
       progressVisible: true,
@@ -121,7 +121,14 @@ export default class LoadNetwork extends React.Component {
         console.log(err);
       });
   };
-
+  handleFileInput = (file)=>{
+    if (file.name.split('.').pop() === "ftree"){
+      this.loadNetwork(file);
+    }
+    else{
+      this.loadJsonFile(file);
+    }
+  }
   loadJsonFile = (jsonFile) =>{
     this.setState({
       progressVisible: true,
@@ -129,17 +136,34 @@ export default class LoadNetwork extends React.Component {
       progressLabel: "Reading file",
       progressError: false
     });
-
+    // const ftree_file = parseJson(jsonFile);
+    // this.loadNetwork(ftree_file, 'json file');
     const url = 'http://127.0.0.1:5000';
-    const getBody = jsonFile;
+    const fileReader = new FileReader();
+    fileReader.onloadend = ()=>{
+      try{
+        setData(JSON.parse(fileReader.result));
+        setErrorData(null)
+      }catch(e){
+        setErrorData("**Not valid JSON file!**");
+      }
+    }
+    if( jsonFile!== undefined)
+      fileReader.readAsText(jsonFile);
+    // const [files, setFiles] = useState("");
+    // fileReader.readAsText(jsonFile, "UTF-8");
+    // fileReader.onload = e => {
+    //   console.log("e.target.result", e.target.result);
+    //   setFiles(e.target.result);
+    // };
     const requestMetaData = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Content-Type': 'application/json'
+        // 'Access-Control-Allow-Origin': '*'
       },
-      body: getBody,
-      credentials: 'include',
+      body: setFiles,
+      // credentials: 'include',
       crossDomain: true
     };
 
@@ -241,10 +265,18 @@ export default class LoadNetwork extends React.Component {
               htmlFor="upload"
             />
           </Step.Group>
+          <input
+              style={{ visibility: "hidden" }}
+              type='file'
+              id='upload'
+              onChange={() => this.handleFileInput(this.input.files[0])}
+              accept=".ftree, .json"
+              ref={input => this.input = input}
+          />
 
           <Divider horizontal style={{ margin: "20px 100px 30px 100px" }} content="Or"/>
 
-          <Step.Group style={{display: 'inline-flex'}}>
+          <Step.Group>
             <Step
                 disabled={disabled}
                 as="label"
@@ -253,28 +285,18 @@ export default class LoadNetwork extends React.Component {
                 description="Multilayer network"
                 link
                 active={!disabled}
-                htmlFor="uploadJson"
+                htmlFor="upload"
             />
           </Step.Group>
+          {/*<input*/}
+          {/*    style={{ visibility: "hidden" }}*/}
+          {/*    type='file'*/}
+          {/*    id='uploadJson'*/}
+          {/*    onChange={() => this.loadJsonFile(this.input.files[0])}*/}
+          {/*    accept=".json"*/}
+          {/*    ref={input => this.input = input}*/}
+          {/*/>*/}
 
-          <input
-            style={{ visibility: "hidden" }}
-            type='file'
-            id='upload'
-            onChange={() => this.loadNetwork(this.input.files[0])}
-            accept=".ftree"
-            ref={input => this.input = input}
-          />
-
-
-          <input
-              style={{ visibility: "hidden" }}
-              type='file'
-              id='uploadJson'
-              onChange={() => this.loadJsonFile(this.input.files[0])}
-              accept=".json"
-              ref={input => this.input = input}
-          />
           {progressVisible &&
           <div style={{ padding: "50px 100px 0" }}>
             <Progress
