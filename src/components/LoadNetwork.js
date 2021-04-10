@@ -78,35 +78,35 @@ export default class LoadNetwork extends React.Component {
           throw new Error(parsed.errors[0].message);
         }
 
-        // const ftree = parseFTree(parsed.data);
-        const ftree = {
-          data: {
-            tree: [
-              { path: '1:1', flow: 0.1, name: 'Name 1', node: 1},
-              { path: '1:2', flow: 0.1, name: 'Name 2', node: 2},
-            ],
-            links: [
-              {
-                path: 'root',
-                enterFlow: 0,
-                exitFlow: 0,
-                numEdges: 2,
-                numChildren: 2,
-                links: [
-                  { source: 1, target: 2, flow: 0.1 },
-                  { source: 2, target: 1, flow: 0.1 },
-                ],
-              },
-            ],
-          },
-          errors: [],
-          meta: {
-            directed: true,
-          },
-        };
-        if (ftree.errors.length) {
-          throw new Error(ftree.errors[0]);
-        }
+        const ftree = parseFTree(parsed.data);
+        // const ftree = {
+        //   data: {
+        //     tree: [
+        //       { path: '1:1', flow: 0.1, name: 'Name 1', node: 1},
+        //       { path: '1:2', flow: 0.1, name: 'Name 2', node: 2},
+        //     ],
+        //     links: [
+        //       {
+        //         path: 'root',
+        //         enterFlow: 0,
+        //         exitFlow: 0,
+        //         numEdges: 2,
+        //         numChildren: 2,
+        //         links: [
+        //           { source: 1, target: 2, flow: 0.1 },
+        //           { source: 2, target: 1, flow: 0.1 },
+        //         ],
+        //       },
+        //     ],
+        //   },
+        //   errors: [],
+        //   meta: {
+        //     directed: true,
+        //   },
+        // };
+        // if (ftree.errors.length) {
+        //   throw new Error(ftree.errors[0]);
+        // }
 
         const network = networkFromFTree(ftree);
 
@@ -160,34 +160,14 @@ export default class LoadNetwork extends React.Component {
       progressLabel: "Reading file",
       progressError: false
     });
-    // const ftree_file = parseJson(jsonFile);
-    // this.loadNetwork(ftree_file, 'json file');
-    const url = 'http://127.0.0.1:5000';
-    const fileReader = new FileReader();
-    fileReader.onloadend = ()=>{
-      try{
-        setData(JSON.parse(fileReader.result));
-        setErrorData(null)
-      }catch(e){
-        setErrorData("**Not valid JSON file!**");
-      }
-    }
-    if( jsonFile!== undefined)
-      fileReader.readAsText(jsonFile);
-    // const [files, setFiles] = useState("");
-    // fileReader.readAsText(jsonFile, "UTF-8");
-    // fileReader.onload = e => {
-    //   console.log("e.target.result", e.target.result);
-    //   setFiles(e.target.result);
-    // };
+
+    const url = 'http://127.0.0.1:5000/getFtree';
     const requestMetaData = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-        // 'Access-Control-Allow-Origin': '*'
       },
-      body: setFiles,
-      // credentials: 'include',
+        body: jsonFile,
       crossDomain: true
     };
 
