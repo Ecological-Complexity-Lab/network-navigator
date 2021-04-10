@@ -78,8 +78,32 @@ export default class LoadNetwork extends React.Component {
           throw new Error(parsed.errors[0].message);
         }
 
-        const ftree = parseFTree(parsed.data);
-
+        // const ftree = parseFTree(parsed.data);
+        const ftree = {
+          data: {
+            tree: [
+              { path: '1:1', flow: 0.1, name: 'Name 1', node: 1},
+              { path: '1:2', flow: 0.1, name: 'Name 2', node: 2},
+            ],
+            links: [
+              {
+                path: 'root',
+                enterFlow: 0,
+                exitFlow: 0,
+                numEdges: 2,
+                numChildren: 2,
+                links: [
+                  { source: 1, target: 2, flow: 0.1 },
+                  { source: 2, target: 1, flow: 0.1 },
+                ],
+              },
+            ],
+          },
+          errors: [],
+          meta: {
+            directed: true,
+          },
+        };
         if (ftree.errors.length) {
           throw new Error(ftree.errors[0]);
         }
@@ -104,7 +128,7 @@ export default class LoadNetwork extends React.Component {
   };
 
   loadExampleData = () => {
-    const filename = "multilayer_data.ftree";
+    const filename = "citation_data.ftree";
 
     this.setState({
       progressVisible: true,
@@ -136,10 +160,12 @@ export default class LoadNetwork extends React.Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        // 'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        // 'Access-Control-Allow-Credentials': 'true'
       },
       body: getBody,
-      credentials: 'include',
+      // credentials: 'include',
       crossDomain: true
     };
 
