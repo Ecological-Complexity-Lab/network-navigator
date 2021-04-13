@@ -79,34 +79,6 @@ export default class LoadNetwork extends React.Component {
         }
 
         const ftree = parseFTree(parsed.data);
-        // const ftree = {
-        //   data: {
-        //     tree: [
-        //       { path: '1:1', flow: 0.1, name: 'Name 1', node: 1},
-        //       { path: '1:2', flow: 0.1, name: 'Name 2', node: 2},
-        //     ],
-        //     links: [
-        //       {
-        //         path: 'root',
-        //         enterFlow: 0,
-        //         exitFlow: 0,
-        //         numEdges: 2,
-        //         numChildren: 2,
-        //         links: [
-        //           { source: 1, target: 2, flow: 0.1 },
-        //           { source: 2, target: 1, flow: 0.1 },
-        //         ],
-        //       },
-        //     ],
-        //   },
-        //   errors: [],
-        //   meta: {
-        //     directed: true,
-        //   },
-        // };
-        // if (ftree.errors.length) {
-        //   throw new Error(ftree.errors[0]);
-        // }
 
         const network = networkFromFTree(ftree);
 
