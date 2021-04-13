@@ -8,21 +8,21 @@ import MenuItemAccordion from "./MenuItemAccordion";
 export default function Distributions(props) {
   const { directed, nodes, ...size } = props;
 
-  const flow = nodes.map(n => n.flow).sort((a, b) => b - a);
+  // const flow = nodes.map(n => n.flow).sort((a, b) => b - a);
   const degree = nodes.map(n => n.kin + n.kout).sort((a, b) => b - a);
   const inDegree = nodes.map(n => n.kin).sort((a, b) => b - a);
   const outDegree = nodes.map(n => n.kout).sort((a, b) => b - a);
 
-  const flowDistribution = (
-    <MenuItemAccordion title='Flow distribution' popup='Flow of nodes within this module.'>
-      <Graph
-        xDescription='Node' xLabel='n'
-        yDescription='Flow' yLabel='f' logy
-        data={flow}
-        {...size}
-      />
-    </MenuItemAccordion>
-  );
+  // const flowDistribution = (
+  //   <MenuItemAccordion title='Flow distribution' popup='Flow of nodes within this module.'>
+  //     <Graph
+  //       xDescription='Node' xLabel='n'
+  //       yDescription='Flow' yLabel='f' logy
+  //       data={flow}
+  //       {...size}
+  //     />
+  //   </MenuItemAccordion>
+  // );
 
   const degreeDistribution = (
     <MenuItemAccordion title='Degree distribution' popup='Number of links to nodes within this module.'>
@@ -56,9 +56,9 @@ export default function Distributions(props) {
 
   return (
     <React.Fragment>
-      <Menu.Menu>
-        {flowDistribution}
-      </Menu.Menu>
+      {/*<Menu.Menu>*/}
+      {/*  {flowDistribution}*/}
+      {/*</Menu.Menu>*/}
       <Menu.Menu>
         {degreeDistribution}
       </Menu.Menu>

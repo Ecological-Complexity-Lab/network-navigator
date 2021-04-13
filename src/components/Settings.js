@@ -35,6 +35,10 @@ export default function Settings(props) {
         checked={linkScale === "root"}
         onChange={(e, { checked }) => dispatch({ type: "linkScale", value: checked ? "root" : "linear" })}
       />
+      <select class='ui dropdown'>
+          <option value=''>Attributes</option>
+          <option value='1'>Centrality</option>
+      </select>
       <MyCheckbox
         label="Show labels"
         checked={labelsVisible}
