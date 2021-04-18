@@ -70,7 +70,8 @@ export default function parseFTree(rows) {
   const result = {
     data: {
       tree: [],
-      links: []
+      links: [],
+      attributes: new Map()
     },
     errors: [],
     meta: {
@@ -79,8 +80,7 @@ export default function parseFTree(rows) {
   };
 
   const modules = new Map();
-  const attributes = new Map();
-  const { tree, links } = result.data;
+  const { tree, links, attributes } = result.data;
 
   let i = 0;
 
@@ -155,9 +155,23 @@ export default function parseFTree(rows) {
 
   // 3. Parse links section
   let isOldFormat = false; // missing enterFlow before Infomap v1.0.0
+
   for (; i < rows.length; i++) {
     const row = rows[i];
-
+    if (/^\*Attributes/i.test(row[0].toString())) {
+      i++;
+      let currentNode = rows[i][1];
+      for (; i < rows.length; i++) {
+        if (rows[i][0] === 'Node'){
+          currentNode = rows[i][1];
+          attributes[currentNode] = new Map();
+          i++;
+        }
+        attributes[currentNode][rows[i][0]] = rows[i][1];
+        console.log(rows[i])
+      }
+      break;
+    }
     // 3a. Parse link header #*Links path enterFlow exitFlow numEdges numChildren
     if (/^\*Links/i.test(row[0].toString())) {
       if (row.length < 6) {

@@ -47,6 +47,10 @@ export default function networkFromFTree(ftree) {
       childNode.enterFlow = node.enterFlow;
       childNode.exitFlow = node.exitFlow;
       childNode.links = node.links;
+
+      if(childNode){
+
+      }
     }
   });
 

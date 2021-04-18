@@ -106,6 +106,7 @@ class Network {
     this.visible = false;
     this.connected = false;
     this.occurrences = new Map();
+    this.attributes = new Map();
   }
 
   /**
