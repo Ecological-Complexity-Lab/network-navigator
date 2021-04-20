@@ -38,6 +38,7 @@ class Node {
     this.name = name.toString();
     this.physicalId = physicalId;
     this.occurred = new Map();
+    this.attributes = new Map();
   }
 
   /**
@@ -106,7 +107,6 @@ class Network {
     this.visible = false;
     this.connected = false;
     this.occurrences = new Map();
-    this.attributes = new Map();
   }
 
   /**
@@ -231,8 +231,16 @@ class Network {
       const link = new Link(source, target, l.flow);
       source.outLinks.push(link);
       target.inLinks.push(link);
-      source.kout++;
-      target.kin++;
+
+      if(l.source !== l.target){
+        source.kout++;
+        target.kin++;
+      }
+      else{
+        target.kin++;
+      }
+
+
       return link;
     });
   }

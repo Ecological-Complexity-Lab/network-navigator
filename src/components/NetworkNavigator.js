@@ -84,6 +84,13 @@ export default class NetworkNavigator extends React.Component {
           node => node.totalChildren ? nodeRadius(node.totalChildren) : nodeRadius(1);
         this.renderStyle.nodeFillColor =
           node => node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(1);
+      } else if (nodeSize === 'Degree'){
+        const nodeRadius = scale().domain([0, network.totalChildren]).range([10, 70]);
+        const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
+        this.renderStyle.nodeRadius =
+            node =>  node.totalChildren ? nodeRadius(node.totalChildren) : nodeRadius(node.kin+node.kout);
+        this.renderStyle.nodeFillColor =
+            node =>  node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(node.kin+node.kout);
       }
     }
 

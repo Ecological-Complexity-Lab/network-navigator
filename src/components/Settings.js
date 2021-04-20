@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Checkbox } from "semantic-ui-react";
+import {Checkbox, Dropdown} from "semantic-ui-react";
 import Dispatch from "../context/Dispatch";
 
 
@@ -18,13 +18,21 @@ export default function Settings(props) {
   } = props;
   const { dispatch } = useContext(Dispatch);
 
+  let sizeOptions = []
+  sizeOptions = [
+      {key: 'flow', text: 'flow', value: 'flow'},
+      {key: 'Degree', text: 'Degree', value: 'Degree'},
+      {key: 'nodeSize', text: 'nodeSize', value: 'nodes'}
+      ];
+
+
   return (
     <React.Fragment>
-      <SliderCheckbox
-        label={`Module size based on: ${nodeSize}`}
-        checked={nodeSize === "flow"}
-        onChange={(e, { checked }) => dispatch({ type: "nodeSize", value: checked ? "flow" : "nodes" })}
-      />
+      {/*<SliderCheckbox*/}
+      {/*  label={`Module size based on: ${nodeSize}`}*/}
+      {/*  checked={nodeSize === "flow"}*/}
+      {/*  onChange={(e, { checked }) => dispatch({ type: "nodeSize", value: checked ? "flow" : "nodes" })}*/}
+      {/*/>*/}
       <SliderCheckbox
         label={`Module radius scale: ${nodeScale}`}
         checked={nodeScale === "root"}
@@ -35,10 +43,10 @@ export default function Settings(props) {
         checked={linkScale === "root"}
         onChange={(e, { checked }) => dispatch({ type: "linkScale", value: checked ? "root" : "linear" })}
       />
-      <select class='ui dropdown'>
-          <option value=''>Attributes</option>
-          <option value='1'>Centrality</option>
-      </select>
+      {/*<select class='ui dropdown'>*/}
+      {/*    <option value=''>Attributes</option>*/}
+      {/*    <option value='1'>Centrality</option>*/}
+      {/*</select>*/}
       <MyCheckbox
         label="Show labels"
         checked={labelsVisible}
@@ -54,6 +62,15 @@ export default function Settings(props) {
         checked={lodEnabled}
         onChange={(e, { checked }) => dispatch({ type: "lodEnabled", value: checked })}
       />
+        <Dropdown
+            placeholder='Change node size by:'
+            fluid
+            clearable
+            selection
+            options={sizeOptions}
+            defaultValue={sizeOptions[0].value}
+            onChange={(e, data ) => dispatch({ type: "nodeSize", value: data ? data.value : "flow" })}
+        />
     </React.Fragment>
   );
 };

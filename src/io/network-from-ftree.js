@@ -22,7 +22,7 @@ import TreePath from "../lib/treepath";
 export default function networkFromFTree(ftree) {
   const root = Network.createNetwork("root");
   root.directed = ftree.meta.directed;
-  const { tree, links } = ftree.data;
+  const { tree, links, attributes } = ftree.data;
 
   // Create the tree structure
   links.forEach((node) => {
@@ -48,7 +48,7 @@ export default function networkFromFTree(ftree) {
       childNode.exitFlow = node.exitFlow;
       childNode.links = node.links;
 
-      if(childNode){
+      if(node){
 
       }
     }
@@ -80,6 +80,17 @@ export default function networkFromFTree(ftree) {
     childNode.path = TreePath.join(parent.path, childNode.id);
     parent.addNode(childNode);
   });
+
+
+  var i,j;
+  for ( i = 0; i < root.nodes.length; ++i) {
+    for (j = 0; j < root.nodes[i].nodes.length; ++j) {
+      const attribute = attributes[root.nodes[i].nodes[j].id]
+      root.nodes[i].nodes[j].attributes = attribute;
+    }
+  }
+
+  console.log("nice!!");
 
   Network.connectLinks(root);
 

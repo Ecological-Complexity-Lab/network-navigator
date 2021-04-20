@@ -168,7 +168,7 @@ export default function parseFTree(rows) {
           i++;
         }
         attributes[currentNode][rows[i][0]] = rows[i][1];
-        console.log(rows[i])
+        // console.log(rows[i])
       }
       break;
     }

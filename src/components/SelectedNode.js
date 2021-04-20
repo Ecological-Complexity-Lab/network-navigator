@@ -24,6 +24,7 @@ const countLeafNodes = (node) => {
 };
 
 export default function SelectedNode(props) {
+  var attributes_rows = []
   const { node, directed } = props;
   const [name, setName] = useState(node.name);
   const { dispatch } = useContext(Dispatch);
@@ -39,6 +40,22 @@ export default function SelectedNode(props) {
   }, [node]);
 
   const isRoot = node.path.toString() === "root";
+
+  if(node.attributes) {
+      node.attributes && Object.keys(props.node.attributes).map((subject, idx) => {
+            if (subject !== 'id' && subject !== 'name') {
+              attributes_rows.push(
+              <Table.Row key={idx}>
+                <Popup
+                    trigger={<Table.Cell content={subject}/>}
+                    size='tiny'
+                    content='Atrribute'
+                />
+                <Table.Cell content={props.node.attributes[subject]}/>
+              </Table.Row>);
+            }
+      });
+  }
 
   return (
     <Table celled singleLine striped compact size="small">
@@ -66,34 +83,6 @@ export default function SelectedNode(props) {
           />
           <Table.Cell content={node.totalChildren != null ? node.path.toString() : node.physicalId}/>
         </Table.Row>
-        {/*<Table.Row>*/}
-        {/*  <Popup*/}
-        {/*    trigger={<Table.Cell content='Flow'/>}*/}
-        {/*    size='tiny'*/}
-        {/*    content='The flow contained in this node.'*/}
-        {/*  />*/}
-        {/*  <Table.Cell content={(+node.flow).toPrecision(4)}/>*/}
-        {/*</Table.Row>*/}
-        {/*{node.enterFlow != null &&*/}
-        {/*<Table.Row>*/}
-        {/*  <Popup*/}
-        {/*    trigger={<Table.Cell content='Enter flow'/>}*/}
-        {/*    size='tiny'*/}
-        {/*    content='The module enter flow.'*/}
-        {/*  />*/}
-        {/*  <Table.Cell content={(+node.enterFlow).toPrecision(4)}/>*/}
-        {/*</Table.Row>*/}
-        {/*}*/}
-        {/*{node.exitFlow != null &&*/}
-        {/*<Table.Row>*/}
-        {/*  <Popup*/}
-        {/*    trigger={<Table.Cell content='Exit flow'/>}*/}
-        {/*    size='tiny'*/}
-        {/*    content='The module exit flow.'*/}
-        {/*  />*/}
-        {/*  <Table.Cell content={(+node.exitFlow).toPrecision(4)}/>*/}
-        {/*</Table.Row>*/}
-        {/*}*/}
         {isRoot && directed &&
         <Table.Row>
           <Popup
@@ -166,6 +155,7 @@ export default function SelectedNode(props) {
           />
         </Table.Row>
         }
+        {attributes_rows}
       </Table.Body>
     </Table>
   );
