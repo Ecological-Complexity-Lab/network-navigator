@@ -29,6 +29,8 @@ function reducer(state, action) {
       return { ...state, occurrences: action.value };
     case "lodEnabled":
       return { ...state, lodEnabled: action.value };
+    case 'nodeColor':
+      return { ...state, nodeColor: action.value}
     default:
       throw new Error();
   }
@@ -37,6 +39,7 @@ function reducer(state, action) {
 export default function Layout(props) {
   const initialState = {
     nodeSize: "flow",
+    nodeColor: 'flow',
     nodeScale: "root",
     linkScale: "root",
     labelsVisible: true,

@@ -9,12 +9,13 @@ const SliderCheckbox = props => <MyCheckbox slider {...props}/>;
 
 export default function Settings(props) {
   const {
-    nodeSize,
+    // nodeSize,
     nodeScale,
     linkScale,
     labelsVisible,
     simulationEnabled,
-    lodEnabled
+    lodEnabled,
+    selectedNode
   } = props;
   const { dispatch } = useContext(Dispatch);
 
@@ -24,9 +25,16 @@ export default function Settings(props) {
       {key: 'Degree', text: 'Degree', value: 'Degree'},
       {key: 'nodeSize', text: 'nodeSize', value: 'nodes'}
       ];
+  let colorOptions = [];
+  if(selectedNode.attributes) {
+      colorOptions.push({key: 'color', text: 'flow', value: selectedNode.flow});
+      colorOptions.push({key: 'color', text: 'Degree', value: (selectedNode.kin + selectedNode.kout)});
+      for (const [key, value] of Object.entries(selectedNode.attributes)) if (!isNaN(value) && key !== 'id') {
+          colorOptions.push({key:'color', text:key.toString(), value: value})
+      }
+  }
 
-
-  return (
+    return (
     <React.Fragment>
       {/*<SliderCheckbox*/}
       {/*  label={`Module size based on: ${nodeSize}`}*/}
@@ -43,10 +51,6 @@ export default function Settings(props) {
         checked={linkScale === "root"}
         onChange={(e, { checked }) => dispatch({ type: "linkScale", value: checked ? "root" : "linear" })}
       />
-      {/*<select class='ui dropdown'>*/}
-      {/*    <option value=''>Attributes</option>*/}
-      {/*    <option value='1'>Centrality</option>*/}
-      {/*</select>*/}
       <MyCheckbox
         label="Show labels"
         checked={labelsVisible}
@@ -68,9 +72,17 @@ export default function Settings(props) {
             clearable
             selection
             options={sizeOptions}
-            defaultValue={sizeOptions[0].value}
+            // defaultValue={sizeOptions[0].value}
             onChange={(e, data ) => dispatch({ type: "nodeSize", value: data ? data.value : "flow" })}
         />
+      {!selectedNode.nodes && <Dropdown
+            placeholder='Change node color by:'
+            fluid
+            clearable
+            selection
+            options={colorOptions}
+            onChange={(e, data ) => dispatch({ type: "nodeColor", value: data ? data.value : "flow" })}
+        />}
     </React.Fragment>
   );
 };
