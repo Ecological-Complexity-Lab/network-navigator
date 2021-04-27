@@ -87,10 +87,21 @@ export default function networkFromFTree(ftree) {
     for (j = 0; j < root.nodes[i].nodes.length; ++j) {
       const attribute = attributes[root.nodes[i].nodes[j].id]
       root.nodes[i].nodes[j].attributes = attribute;
+
+      for (const [key, value] of Object.entries(attribute)) {
+        if(!isNaN(value) && key !== 'id') {
+          if (key in root.maxAttributes) {
+            if (value > root.maxAttributes[key]){
+              root.maxAttributes[key] = value;
+            }
+          }
+          else{
+            root.maxAttributes[key] = value;
+          }
+        }
+      }
     }
   }
-
-  console.log("nice!!");
 
   Network.connectLinks(root);
 

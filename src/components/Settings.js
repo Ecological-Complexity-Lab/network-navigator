@@ -21,16 +21,16 @@ export default function Settings(props) {
 
   let sizeOptions = []
   sizeOptions = [
-      {key: 'flow', text: 'flow', value: 'flow'},
+      // {key: 'flow', text: 'flow', value: 'flow'},
       {key: 'Degree', text: 'Degree', value: 'Degree'},
       {key: 'nodeSize', text: 'nodeSize', value: 'nodes'}
       ];
   let colorOptions = [];
   if(selectedNode.attributes) {
-      colorOptions.push({key: 'color', text: 'flow', value: selectedNode.flow});
-      colorOptions.push({key: 'color', text: 'Degree', value: (selectedNode.kin + selectedNode.kout)});
+      // colorOptions.push({key: 'color', text: 'flow', value: selectedNode.flow});
+      colorOptions.push({key: 'color', text: 'Degree', value: 'Degree'});
       for (const [key, value] of Object.entries(selectedNode.attributes)) if (!isNaN(value) && key !== 'id') {
-          colorOptions.push({key:'color', text:key.toString(), value: value})
+          colorOptions.push({key:'color', text:key.toString(), value: key.toString()})
       }
   }
 

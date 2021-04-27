@@ -75,31 +75,38 @@ export default class NetworkNavigator extends React.Component {
 
       if (nodeSize === "flow") {
         const nodeRadius = scale().domain([0, network.maxNodeFlow]).range([10, 70]);
-        // const nodeFillColor = scale().domain([0, network.maxNodeFlow]).range(this.renderStyle.nodeFill);
         this.renderStyle.nodeRadius = node => nodeRadius(node.flow);
-        // this.renderStyle.nodeFillColor = node => nodeFillColor(node.flow);
       } else if (nodeSize === "nodes") {
         const nodeRadius = scale().domain([0, network.totalChildren]).range([10, 70]);
-        // const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
         this.renderStyle.nodeRadius =
           node => node.totalChildren ? nodeRadius(node.totalChildren) : nodeRadius(1);
-        // this.renderStyle.nodeFillColor =
-        //   node => node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(1);
       } else if (nodeSize === 'Degree'){
         const nodeRadius = scale().domain([0, network.totalChildren]).range([10, 70]);
-        // const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
         this.renderStyle.nodeRadius =
             node =>  node.totalChildren ? nodeRadius(node.totalChildren) : nodeRadius(node.kin+node.kout);
-        // this.renderStyle.nodeFillColor =
-        //     node =>  node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(node.kin+node.kout);
       }
     }
 
     if(nodeColor !== prevProps.nodeColor) {
       const scale = nodeScale === "linear" ? d3.scaleLinear : d3.scaleSqrt;
-      const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
-      this.renderStyle.nodeFillColor =
-          node =>  node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(nodeColor);
+
+      if (nodeColor !== 'Degree' && nodeColor !== 'flow') {
+        const nodeFillColor = scale().domain([0, network.maxAttributes[nodeColor]]).range(this.renderStyle.nodeFill);
+        this.renderStyle.nodeFillColor =
+            node => node['attributes'] ? nodeFillColor(node['attributes'][nodeColor]): nodeFillColor(1);
+      }else if(nodeColor === 'Degree'){
+        const nodeFillColor = scale().domain([0, this.props.selectedNode.parent.totalChildren]).range(this.renderStyle.nodeFill);
+        this.renderStyle.nodeFillColor =
+             node =>  node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(node.kin+node.kout);
+      }
+      // else if (nodeColor === 'flow'){
+      //   this.renderStyle.nodeFillColor = node => nodeFillColor(node.flow);
+      // }
+      else{
+        const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
+        this.renderStyle.nodeFillColor =
+          node => node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(1);
+      }
     }
 
     if (linkScale !== prevProps.linkScale) {

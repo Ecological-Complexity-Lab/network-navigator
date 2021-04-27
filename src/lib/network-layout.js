@@ -180,7 +180,14 @@ export default class NetworkLayout {
       .style("fill", this.style.nodeFillColor)
       .style("stroke", this.style.nodeBorderColor)
       .style("stroke-width", this.style.nodeBorderWidth);
-
+    // elements.circle = elements.node.append("rect")
+    //     // .attr('x', d3.event.x)
+    //     // .attr('y', d3.event.y)
+    //     .attr('width', this.style.nodeRadius*2)
+    //     .attr('height', this.style.nodeRadius*2)
+    //     .style('fill', this.style.nodeFillColor)
+    //     .style('stroke', this.style.nodeBorderColor)
+    //     .style("stroke-width", this.style.nodeBorderWidth);
     elements.circle.accessors = {
       r: n => this.style.nodeRadius(n),
       fill: n => this.style.nodeFillColor(n)

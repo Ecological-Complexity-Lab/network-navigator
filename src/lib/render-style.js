@@ -24,7 +24,7 @@ import { interpolateGreens, scaleLinear, scaleSqrt } from "d3";
  * @return {Object} an object with render style accessors
  */
 export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlow) {
-  const nodeFill = [interpolateGreens(10 / 1000), interpolateGreens(999 / 1000)];
+  const nodeFill = [interpolateGreens(25 / 1000), interpolateGreens(999 / 1000)];
   const nodeBorder = [interpolateGreens(3 / 9), interpolateGreens(6 / 9)];
   const linkFill = ["#9BCDFD", "#064575"];
 

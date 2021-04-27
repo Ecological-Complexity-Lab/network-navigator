@@ -41,21 +41,20 @@ export default function SelectedNode(props) {
 
   const isRoot = node.path.toString() === "root";
 
-  if(node.attributes) {
-      node.attributes && Object.keys(props.node.attributes).map((subject, idx) => {
-            if (subject !== 'id' && subject !== 'name') {
-              attributes_rows.push(
-              <Table.Row key={idx}>
-                <Popup
-                    trigger={<Table.Cell content={subject}/>}
-                    size='tiny'
-                    content='Atrribute'
-                />
-                <Table.Cell content={props.node.attributes[subject]}/>
-              </Table.Row>);
-            }
-      });
-  }
+  node.attributes && Object.keys(props.node.attributes).map((subject, idx) => {
+        if (subject !== 'id' && subject !== 'name') {
+          attributes_rows.push(
+          <Table.Row key={idx}>
+            <Popup
+                trigger={<Table.Cell content={subject}/>}
+                size='tiny'
+                content='Atrribute'
+            />
+            <Table.Cell content={props.node.attributes[subject]}/>
+          </Table.Row>);
+        }
+  });
+
 
   return (
     <Table celled singleLine striped compact size="small">
