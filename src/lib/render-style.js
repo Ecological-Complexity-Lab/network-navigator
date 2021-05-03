@@ -23,16 +23,15 @@ import { interpolateGreens, scaleLinear, scaleSqrt } from "d3";
  * @param {number} maxLinkFlow the max flow for links
  * @return {Object} an object with render style accessors
  */
-export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlow) {
+export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlow, network) {
   const nodeFill = [interpolateGreens(25 / 1000), interpolateGreens(999 / 1000)];
   const nodeBorder = [interpolateGreens(3 / 9), interpolateGreens(6 / 9)];
   const linkFill = ["#9BCDFD", "#064575"];
-
   const nodeRadius = scaleSqrt().domain([0, maxNodeFlow]).range([10, 70]);
   const nodeFillColor = scaleSqrt().domain([0, maxNodeFlow]).range(nodeFill);
   const nodeBorderWidth = scaleSqrt().domain([0, maxNodeExitFlow]).range([2, 5]);
   const nodeBorderColor = scaleSqrt().domain([0, maxNodeExitFlow]).range(nodeBorder);
-
+  const nodeShape = network.totalChildren ? 'rect' : 'shape';
   const linkFillColor = scaleSqrt().domain([0, maxLinkFlow]).range(linkFill);
   const linkWidth = scaleSqrt().domain([0, maxLinkFlow]).range([2, 15]);
 
@@ -41,6 +40,7 @@ export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlo
   const linkBend = scaleLinear().domain([50, 250]).range([0, 40]).clamp(true);
 
   return {
+    nodeShape,
     nodeFill,
     linkFill,
     nodeRadius: node => nodeRadius(node.flow),

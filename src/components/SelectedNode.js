@@ -41,7 +41,7 @@ export default function SelectedNode(props) {
 
   const isRoot = node.path.toString() === "root";
 
-  node.attributes && Object.keys(props.node.attributes).map((subject, idx) => {
+  node.attributes && Object.keys(props.node.attributes).forEach((subject, idx) => {
         if (subject !== 'id' && subject !== 'name') {
           attributes_rows.push(
           <Table.Row key={idx}>

@@ -7,7 +7,6 @@ import { linkByIndex, nodeByIndex } from "./level-of-detail";
 import Point from "./point";
 import Simulation from "./simulation";
 
-
 const width = window.innerWidth;
 const height = window.innerHeight;
 const center = new Point(width / 2, height / 2);
@@ -159,8 +158,15 @@ export default class NetworkLayout {
 
     const onNodeClicked = (dispatch => function(n) {
       dispatch.call("click", this, n);
-      d3.select(this).select("circle")
-        .style("stroke", "#f48074");
+      if (n.totalChildren){
+        d3.select(this).select("path")
+            .style("stroke", "#f48074");
+      }
+      else{
+        d3.select(this).select("circle")
+            .style("stroke", "#f48074");
+
+      }
     })(this.dispatch);
 
     elements.node = parent.append("g")
@@ -175,19 +181,19 @@ export default class NetworkLayout {
       .on("mouseout", restoreLinks(this.style))
       .call(this.onDrag);
 
+
     elements.circle = elements.node.append("circle")
+        // .filter(this.style.nodeShape === 'circle')
       .attr("r", this.style.nodeRadius)
       .style("fill", this.style.nodeFillColor)
       .style("stroke", this.style.nodeBorderColor)
       .style("stroke-width", this.style.nodeBorderWidth);
-    // elements.circle = elements.node.append("rect")
-    //     // .attr('x', d3.event.x)
-    //     // .attr('y', d3.event.y)
-    //     .attr('width', this.style.nodeRadius*2)
-    //     .attr('height', this.style.nodeRadius*2)
-    //     .style('fill', this.style.nodeFillColor)
-    //     .style('stroke', this.style.nodeBorderColor)
-    //     .style("stroke-width", this.style.nodeBorderWidth);
+
+    elements.path = elements.node.append("path")
+        .attr("r", this.style.nodeRadius)
+        .style('fill', this.style.nodeFillColor)
+        .style('stroke', this.style.nodeBorderColor)
+        .style("stroke-width", this.style.nodeBorderWidth);
     elements.circle.accessors = {
       r: n => this.style.nodeRadius(n),
       fill: n => this.style.nodeFillColor(n)
@@ -272,21 +278,32 @@ export default class NetworkLayout {
 
   updateAttributes(simulationRunning = false) {
     if (this.updateDisabled && !simulationRunning) return;
-
-    const { circle, searchMark, label, link, occurrences } = this.elements;
+    var polygon = d3.line()
+        .x(function (d){return d.x})
+        .y(function (d){return d.y});
+    const { circle, path, searchMark, label, link, occurrences } = this.elements;
 
     this.linkRenderer.nodeRadius(circle.accessors.r);
-
+    
     occurrences
       .attr("r", occurrences.accessors.r)
       .attr("fill", occurrences.accessors.fill)
       .attr("cx", n => n.x)
       .attr("cy", n => n.y);
+
+    path
+        .style("fill", circle.accessors.fill)
+        .filter(n => n.totalChildren)
+        .attr('d', n=> polygon(this.getCoordinates(n)));
     circle
-      .style("fill", circle.accessors.fill)
-      .attr("r", circle.accessors.r)
-      .attr("cx", n => n.x)
-      .attr("cy", n => n.y);
+        .style("fill", circle.accessors.fill)
+        .filter(n => n.shape === 'circle')
+        // .filter(this.style.nodeShape === 'circle')
+        .attr("cx", n => n.x)
+        .attr("cy", n => n.y)
+        .attr('width', circle.accessors.r)
+        .attr('height', circle.accessors.r);
+
     searchMark
       .attr("r", this.style.searchMarkRadius)
       .attr("cx", n => n.x)
@@ -435,6 +452,22 @@ export default class NetworkLayout {
     }
 
     return this;
+  }
+
+  getCoordinates(node){
+    let _nodeX = node => node.x;
+    let _nodeY = node => node.y;
+    let _nodeRadius = node => this.renderStyle.nodeRadius(node);
+    const x0 = _nodeX(node) - _nodeRadius(node) - _nodeRadius(node)/2;
+    const y0 = _nodeY(node) + _nodeRadius(node);
+    const x1 = _nodeX(node) - _nodeRadius(node);
+    const y1 = _nodeY(node) - _nodeRadius(node);
+    const x2 = _nodeX(node) + _nodeRadius(node) + _nodeRadius(node)/2;
+    const y2 = _nodeY(node) - _nodeRadius(node);
+    const x3 = _nodeX(node) + _nodeRadius(node);
+    const y3 = _nodeY(node) + _nodeRadius(node);
+
+    return [{x: x0, y: y0}, {x: x1, y: y1}, {x: x2, y: y2}, {x: x3, y: y3}, {x: x0, y: y0}]
   }
 
   destroy() {

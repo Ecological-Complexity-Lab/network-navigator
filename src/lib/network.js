@@ -24,7 +24,7 @@ const node = () => ({
   kin: 0,
   kout: 0,
   inLinks: [],
-  outLinks: []
+  outLinks: [],
 });
 
 
@@ -39,6 +39,7 @@ class Node {
     this.physicalId = physicalId;
     this.occurred = new Map();
     this.attributes = new Map();
+    this._shape = '';
   }
 
   /**
@@ -52,6 +53,13 @@ class Node {
    */
   static create(id, name, flow, physicalId) {
     return Object.assign(new Node(name, physicalId), treeNode(id), node(), hasFlow(flow), isRenderable);
+  }
+
+  get shape(){
+    return this.totalChildren ? 'rect': 'circle';
+  }
+  set shape(shape){
+    this._shape = shape
   }
 }
 

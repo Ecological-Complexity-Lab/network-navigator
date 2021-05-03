@@ -41,7 +41,7 @@ export default class NetworkNavigator extends React.Component {
     const { network } = props;
     this.layouts = new Map();
 
-    this.renderStyle = makeRenderStyle(network.maxNodeFlow, network.maxNodeExitFlow, network.maxLinkFlow);
+    this.renderStyle = makeRenderStyle(network.maxNodeFlow, network.maxNodeExitFlow, network.maxLinkFlow, network );
 
     if (network.directed) {
       this.linkRenderer = halfLink()
