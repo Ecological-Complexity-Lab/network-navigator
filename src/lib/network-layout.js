@@ -198,6 +198,10 @@ export default class NetworkLayout {
       r: n => this.style.nodeRadius(n),
       fill: n => this.style.nodeFillColor(n)
     };
+    elements.path.accessors = {
+      r: n => this.style.nodeRadius(n),
+      fill: n => this.style.nodeFillColor(n)
+    };
 
     const radius = (n) => {
       if (n.visible) return 0;
@@ -274,6 +278,8 @@ export default class NetworkLayout {
   clearSelectedNodes() {
     this.elements.circle
       .style("stroke", this.style.nodeBorderColor);
+    this.elements.path
+        .style("stroke", this.style.nodeBorderColor);
   }
 
   updateAttributes(simulationRunning = false) {
@@ -284,7 +290,7 @@ export default class NetworkLayout {
     const { circle, path, searchMark, label, link, occurrences } = this.elements;
 
     this.linkRenderer.nodeRadius(circle.accessors.r);
-    
+
     occurrences
       .attr("r", occurrences.accessors.r)
       .attr("fill", occurrences.accessors.fill)
@@ -297,7 +303,7 @@ export default class NetworkLayout {
         .attr('d', n=> polygon(this.getCoordinates(n)));
     circle
         .style("fill", circle.accessors.fill)
-        .filter(n => n.shape === 'circle')
+        // .filter(n => n.shape === 'circle')
         // .filter(this.style.nodeShape === 'circle')
         .attr("cx", n => n.x)
         .attr("cy", n => n.y)
