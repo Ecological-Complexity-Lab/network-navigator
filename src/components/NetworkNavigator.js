@@ -8,19 +8,18 @@ import Point from "../lib/point";
 import makeRenderStyle from "../lib/render-style";
 import Dispatch from "../context/Dispatch";
 
-
 function takeLargest(network, amount) {
   let { nodes, links } = network;
 
-  nodes.forEach(node => node.shouldRender = false);
-  links.forEach(link => link.shouldRender = false);
+  nodes.forEach((node) => (node.shouldRender = false));
+  links.forEach((link) => (link.shouldRender = false));
 
   nodes = largestNodes(nodes, amount);
-  links = links.filter(link => link.flow > 0);
+  links = links.filter((link) => link.flow > 0);
   links = connectedLinks({ nodes, links });
 
-  nodes.forEach(node => node.shouldRender = true);
-  links.forEach(link => link.shouldRender = true);
+  nodes.forEach((node) => (node.shouldRender = true));
+  links.forEach((link) => (link.shouldRender = true));
 }
 
 export default class NetworkNavigator extends React.Component {
@@ -31,7 +30,7 @@ export default class NetworkNavigator extends React.Component {
     linkScale: PropTypes.string,
     labelsVisible: PropTypes.bool,
     simulationEnabled: PropTypes.bool,
-    lodEnabled: PropTypes.bool
+    lodEnabled: PropTypes.bool,
   };
 
   static contextType = Dispatch;
@@ -45,14 +44,14 @@ export default class NetworkNavigator extends React.Component {
 
     if (network.directed) {
       this.linkRenderer = halfLink()
-        .nodeRadius(node => this.renderStyle.nodeRadius(node))
-        .width(link => this.renderStyle.linkWidth(link))
-        .oppositeLink(link => link.oppositeLink)
+        .nodeRadius((node) => this.renderStyle.nodeRadius(node))
+        .width((link) => this.renderStyle.linkWidth(link))
+        .oppositeLink((link) => link.oppositeLink)
         .bend((link, distance) => this.renderStyle.linkBend(distance));
     } else {
       this.linkRenderer = undirectedLink()
-        .nodeRadius(node => this.renderStyle.nodeRadius(node))
-        .width(link => this.renderStyle.linkWidth(link))
+        .nodeRadius((node) => this.renderStyle.nodeRadius(node))
+        .width((link) => this.renderStyle.linkWidth(link))
         .bend((link, distance) => this.renderStyle.linkBend(distance));
     }
   }
@@ -67,6 +66,7 @@ export default class NetworkNavigator extends React.Component {
       labelsVisible,
       simulationEnabled,
       lodEnabled,
+      nodeLimit,
       nodeColor
     } = this.props;
 
@@ -111,41 +111,45 @@ export default class NetworkNavigator extends React.Component {
 
     if (linkScale !== prevProps.linkScale) {
       const scale = linkScale === "linear" ? d3.scaleLinear : d3.scaleSqrt;
-      const linkWidth = scale().domain([0, network.maxLinkFlow]).range([2, 15]);
-      const linkFillColor = scale().domain([0, network.maxLinkFlow]).range(this.renderStyle.linkFill);
-      this.renderStyle.linkWidth = link => linkWidth(link.flow);
-      this.renderStyle.linkFillColor = link => linkFillColor(link.flow);
+      const linkWidth = scale()
+        .domain([0, network.maxLinkFlow])
+        .range([2, 15]);
+      const linkFillColor = scale()
+        .domain([0, network.maxLinkFlow])
+        .range(this.renderStyle.linkFill);
+      this.renderStyle.linkWidth = (link) => linkWidth(link.flow);
+      this.renderStyle.linkFillColor = (link) => linkFillColor(link.flow);
     }
-
 
     if (occurrences) {
       network.clearOccurrences();
-      occurrences.forEach(o => network.markOccurrences(o));
+      occurrences.forEach((o) => network.markOccurrences(o));
     }
 
-    this.layouts.forEach(layout => {
+    this.layouts.forEach((layout) => {
       layout.renderStyle = this.renderStyle;
       layout.labelsVisible = labelsVisible;
       layout.simulationEnabled = simulationEnabled;
       layout.lodEnabled = lodEnabled;
+      layout.nodeLimit = nodeLimit;
       layout.updateAttributes();
     });
   }
 
   renderPath(currentPath) {
-    const { network } = this.props;
+    const { network, nodeLimit } = this.props;
     const { dispatch } = this.context;
 
     const treeNode = network.getNodeByPath(currentPath);
 
-    takeLargest(treeNode, 20);
+    takeLargest(treeNode, nodeLimit);
 
     const layout = this.layouts.get(currentPath);
 
     layout.on("click", (node) => {
       console.log(node);
       dispatch({ type: "selectedNode", value: node });
-      this.layouts.forEach(l => l.clearSelectedNodes());
+      this.layouts.forEach((l) => l.clearSelectedNodes());
     });
 
     layout.on("render", ({ path, layout }) => {
@@ -165,52 +169,56 @@ export default class NetworkNavigator extends React.Component {
   }
 
   componentDidMount() {
-    const { network } = this.props;
+    const { network, nodeLimit } = this.props;
     const { dispatch } = this.context;
     const { innerWidth, innerHeight } = window;
 
     dispatch({
       type: "searchCallback",
-      value: name => {
+      value: (name) => {
         const hits = network.search(name);
-        this.layouts.forEach(l => l.updateAttributes());
+        this.layouts.forEach((l) => l.updateAttributes());
         return hits;
-      }
+      },
     });
 
-    const zoom = d3.zoom()
-      .scaleExtent([0.1, 100000]);
+    const zoom = d3.zoom().scaleExtent([0.1, 100000]);
 
-    const svg = d3.select(this.svgNode)
-      .call(zoom);
+    const svg = d3.select(this.svgNode).call(zoom);
 
     const networkEl = svg.select("#network");
 
     zoom.on("zoom", () => {
-      this.layouts.forEach(layout =>
-        layout.applyTransform(d3.event.transform).updateAttributes());
+      this.layouts.forEach((layout) =>
+        layout.applyTransform(d3.event.transform).updateAttributes(),
+      );
       networkEl.attr("transform", d3.event.transform);
     });
 
-    svg.select(".background")
-      .on("click", () => {
-        console.log(network);
-        dispatch({ type: "selectedNode", value: network });
-        this.layouts.forEach(l => l.clearSelectedNodes());
-      });
+    svg.select(".background").on("click", () => {
+      console.log(network);
+      dispatch({ type: "selectedNode", value: network });
+      this.layouts.forEach((l) => l.clearSelectedNodes());
+    });
 
     const rootPath = network.path.toString();
 
-    this.layouts.set(rootPath, new NetworkLayout({
-      linkRenderer: this.linkRenderer,
-      renderStyle: this.renderStyle,
-      renderTarget: {
-        parent: networkEl.append("g").attr("class", "network"),
-        labels: svg.select("#labelsContainer").append("g")
-          .attr("class", "network labels")
-      },
-      position: new Point(innerWidth / 2 - 150, innerHeight / 2)
-    }));
+    this.layouts.set(
+      rootPath,
+      new NetworkLayout({
+        linkRenderer: this.linkRenderer,
+        renderStyle: this.renderStyle,
+        renderTarget: {
+          parent: networkEl.append("g").attr("class", "network"),
+          labels: svg
+            .select("#labelsContainer")
+            .append("g")
+            .attr("class", "network labels"),
+        },
+        position: new Point(innerWidth / 2 - 150, innerHeight / 2),
+        nodeLimit,
+      }),
+    );
 
     this.renderPath(rootPath);
   }
@@ -218,15 +226,15 @@ export default class NetworkNavigator extends React.Component {
   render() {
     return (
       <svg
-        ref={node => this.svgNode = node}
+        ref={(node) => (this.svgNode = node)}
         style={{ width: "100vw", height: "100vh" }}
         xmlns={d3.namespaces.svg}
         xmlnsXlink={d3.namespaces.xlink}
         id="networkNavigatorSvg"
       >
-        <rect className='background' width="100%" height="100%" fill='#fff'/>
-        <g id='network'/>
-        <g id='labelsContainer'/>
+        <rect className="background" width="100%" height="100%" fill="#fff" />
+        <g id="network" />
+        <g id="labelsContainer" />
       </svg>
     );
   }
