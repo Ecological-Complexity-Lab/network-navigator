@@ -148,6 +148,25 @@ export default class NetworkLayout {
 
     parent.selectAll("*").remove();
     labels.selectAll("*").remove();
+    var gradient = parent.append("svg:defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%")
+        .attr("spreadMethod", "pad");
+
+    gradient.append("svg:stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#0c0")
+        .attr("stop-opacity", 1);
+
+    gradient.append("svg:stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#c00")
+        .attr("stop-opacity", 1);
+
 
     elements.link = parent
       .append("g")
@@ -171,7 +190,7 @@ export default class NetworkLayout {
             .style("stroke", "#f48074");
       }
       else{
-        d3.select(this).select("circle")
+        d3.select(this).select("ellipse")
             .style("stroke", "#f48074");
 
       }
@@ -191,9 +210,10 @@ export default class NetworkLayout {
       .call(this.onDrag);
 
     elements.circle = elements.node
-      .append("circle")
+      .append("ellipse")
       .attr("r", this.style.nodeRadius)
-      .style("fill", this.style.nodeFillColor)
+      // .style("fill", this.style.nodeFillColor)
+        .style("fill",  "url(#gradient)")
       .style("stroke", this.style.nodeBorderColor)
       .style("stroke-width", this.style.nodeBorderWidth);
 
@@ -202,6 +222,7 @@ export default class NetworkLayout {
         .style('fill', this.style.nodeFillColor)
         .style('stroke', this.style.nodeBorderColor)
         .style("stroke-width", this.style.nodeBorderWidth);
+
     elements.circle.accessors = {
       r: (n) => this.style.nodeRadius(n),
       fill: (n) => this.style.nodeFillColor(n),
@@ -316,10 +337,12 @@ export default class NetworkLayout {
         .attr('d', n=> polygon(this.getCoordinates(n)));
     circle
         .style("fill", circle.accessors.fill)
-        // .filter(n => n.shape === 'circle')
+        .filter(n => n.shape === 'circle')
         // .filter(this.style.nodeShape === 'circle')
         .attr("cx", n => n.x)
         .attr("cy", n => n.y)
+        .attr("rx", n => this.renderStyle.nodeRadius(n)*3)
+        .attr("ry", n => this.renderStyle.nodeRadius(n))
         .attr('width', circle.accessors.r)
         .attr('height', circle.accessors.r);
 
@@ -496,14 +519,14 @@ export default class NetworkLayout {
     let _nodeX = node => node.x;
     let _nodeY = node => node.y;
     let _nodeRadius = node => this.renderStyle.nodeRadius(node);
-    const x0 = _nodeX(node) - _nodeRadius(node)*1.5 - _nodeRadius(node)*3;
-    const y0 = _nodeY(node) + _nodeRadius(node)*1.5;
-    const x1 = _nodeX(node) - _nodeRadius(node)*1.5;
-    const y1 = _nodeY(node) - _nodeRadius(node)*1.5;
-    const x2 = _nodeX(node) + _nodeRadius(node)*1.5 + _nodeRadius(node)*3;
-    const y2 = _nodeY(node) - _nodeRadius(node)*1.5;
-    const x3 = _nodeX(node) + _nodeRadius(node)*1.5;
-    const y3 = _nodeY(node) + _nodeRadius(node)*1.5;
+    const x0 = _nodeX(node) - _nodeRadius(node)*1.0 - _nodeRadius(node)*3;
+    const y0 = _nodeY(node) + _nodeRadius(node)*1.0;
+    const x1 = _nodeX(node) - _nodeRadius(node)*1.0;
+    const y1 = _nodeY(node) - _nodeRadius(node)*1.0;
+    const x2 = _nodeX(node) + _nodeRadius(node)*1.0 + _nodeRadius(node)*3;
+    const y2 = _nodeY(node) - _nodeRadius(node)*1.0;
+    const x3 = _nodeX(node) + _nodeRadius(node)*1.0;
+    const y3 = _nodeY(node) + _nodeRadius(node)*1.0;
 
     return [{x: x0, y: y0}, {x: x1, y: y1}, {x: x2, y: y2}, {x: x3, y: y3}, {x: x0, y: y0}]
   }

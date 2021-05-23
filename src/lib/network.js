@@ -116,6 +116,7 @@ class Network {
     this.connected = false;
     this.occurrences = new Map();
     this.maxAttributes = new Map();
+    this.interLinks = [];
   }
 
   /**
@@ -135,6 +136,9 @@ class Network {
     return this._nodes.get(childId);
   }
 
+  getNodeFromLayer(childId, layerId) {
+    return this._nodes.get(layerId)._nodes.get(childId);
+  }
   get nodes() {
     if (!this._nodesArray) {
       this._nodesArray = Array.from(this._nodes.values());
@@ -252,6 +256,28 @@ class Network {
 
       return link;
     });
+  }
+
+  connectInterLinks(){
+
+    this.interLinks = this.interLinks.map(l => {
+      // if (l.sourceNode > 0 && l.sourceLayer > 0 && l.targetNode > 0 && l.targetLayer > 0) {
+      const source = this.getNodeFromLayer(l.sourceNode, l.sourceLayer);
+      const target = this.getNodeFromLayer(l.targetNode, l.targetLayer);
+      const link = new Link(source, target, l.weight);
+      source.outLinks.push(link);
+      target.inLinks.push(link);
+
+
+      source.kout++;
+      target.kin++;
+
+      return link;
+      // }
+    });
+
+    // this.links = this.links.concat(this.interLinks);
+    Array.prototype.push.apply(this.links,this.interLinks);
   }
 
   search(name) {
@@ -389,6 +415,8 @@ export function connectLinks(root) {
       node.connect();
     }
   }
+
+  root.connectInterLinks();
 }
 
 /**

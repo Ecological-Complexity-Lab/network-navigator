@@ -22,8 +22,9 @@ import TreePath from "../lib/treepath";
 export default function networkFromFTree(ftree) {
   const root = Network.createNetwork("root");
   root.directed = ftree.meta.directed;
-  const { tree, links, attributes } = ftree.data;
+  const { tree, links, attributes, interLinks } = ftree.data;
 
+  root.interLinks = interLinks;
   // Create the tree structure
   links.forEach((node) => {
     if (node.path === "root") {
