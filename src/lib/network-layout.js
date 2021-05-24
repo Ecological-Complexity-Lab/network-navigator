@@ -334,7 +334,9 @@ export default class NetworkLayout {
     path
         .style("fill", circle.accessors.fill)
         .filter(n => n.totalChildren)
-        .attr('d', n=> polygon(this.getCoordinates(n)));
+        .attr('d', n=> polygon(this.getCoordinates(n)))
+        .attr("cx", n => n.x)
+        .attr("cy", n => n.y);
     circle
         .style("fill", circle.accessors.fill)
         .filter(n => n.shape === 'circle')

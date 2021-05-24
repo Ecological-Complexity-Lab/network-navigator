@@ -12,10 +12,10 @@ const maxFlow = (items) =>
 const minFlow = (items) =>
   items.reduce((min, item) => Math.min(min, item.flow), Infinity);
 
-const LINK_DISTANCE_MIN = 100;
-const LINK_DISTANCE_MAX = 250;
+const LINK_DISTANCE_MIN = 50;
+const LINK_DISTANCE_MAX = 100;
 const CHARGE = 500;
-const DISTANCE_MAX = 400;
+const DISTANCE_MAX = 90;
 const LINK_STRENGTH_MIN = 0.5;
 const LINK_STRENGTH_MAX = 1;
 const NODE_MASS_MIN = 0.5;
@@ -35,12 +35,12 @@ export default function Simulation(
   charge = CHARGE,
 ) {
   const simulation = forceSimulation()
-    .force("collide", forceCollide(70))
-    .force("link", forceLink())
+    .force("collide", forceCollide(-50))
+    .force("link", forceLink(2))
     .force(
       "charge",
       forceManyBody()
-        .strength(-charge)
+        .strength(-600)
         .distanceMax(DISTANCE_MAX),
     )
     .force("center", forceCenter(x, y))
@@ -75,7 +75,13 @@ export default function Simulation(
         .range([NODE_MASS_MIN, NODE_MASS_MAX]);
 
       simulation.force("charge").strength((node) => -charge * mass(node.flow));
+
     }
+
+    // if(nodes[0].nodes){
+    //   simulation.force("collide", forceCollide(10))
+    // }
+
 
     const alpha = simulation.alpha();
 
