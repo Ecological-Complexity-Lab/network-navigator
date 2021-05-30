@@ -28,7 +28,7 @@ export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlo
   const nodeBorder = [interpolateGreens(3 / 9), interpolateGreens(6 / 9)];
   const linkFill = ["#9BCDFD", "#064575"];
   const numOfChildren =  network.totalChildren ? network.totalChildren : 0;
-  const nodeRadius = scaleSqrt().domain([0, numOfChildren*10]).range([10, 100]);
+  const nodeRadius = scaleSqrt().domain([0, numOfChildren*10]).range([12, 120]);
   const nodeFillColor = scaleSqrt().domain([0, numOfChildren*10]).range(nodeFill);
   const nodeBorderWidth = scaleSqrt().domain([0, numOfChildren*10]).range([2, 5]);
   const nodeBorderColor = scaleSqrt().domain([0, numOfChildren*10]).range(nodeBorder);

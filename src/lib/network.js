@@ -237,25 +237,82 @@ class Network {
   connect() {
     if (this.connected) return;
     this.connected = true;
-
-    this.links = this.links.map(l => {
+    let result = []
+    for (let l of this.links) {
       const source = this.getNode(l.source);
+      let interLink = null;
+      if (source.parent != null && source.parent.id !== 'root' && this.nodeInsideInter(source)) {
+        interLink = this.getLinkByNode(source);
+        const sourceInter = this.getNodeFromLayer(interLink.sourceNode, interLink.sourceLayer);
+        const targetInter = this.getNodeFromLayer(interLink.targetNode, interLink.targetLayer);
+        const linkInter = new Link(sourceInter, targetInter, interLink.weight);
+        sourceInter.outLinks.push(linkInter);
+        targetInter.inLinks.push(linkInter);
+
+        sourceInter.kout++;
+        targetInter.kin++;
+
+        result.push(linkInter);
+      }
       const target = this.getNode(l.target);
       const link = new Link(source, target, l.flow);
       source.outLinks.push(link);
       target.inLinks.push(link);
 
-      if(l.source !== l.target){
+      if (l.source !== l.target) {
         source.kout++;
         target.kin++;
-      }
-      else{
+      } else {
         target.kin++;
       }
 
+      result.push(link);
+    }
 
-      return link;
-    });
+    this.links = result;
+    // if (this.parent != null && this.parent !== 'root' &&  this.nodeInsideInter(source)){
+    //   let interLink = this.getLinkByNode(source);
+    //
+    //   this.interLinks = this.interLinks.map(l => {
+    //     // if (l.sourceNode > 0 && l.sourceLayer > 0 && l.targetNode > 0 && l.targetLayer > 0) {
+    //     const source = this.getNodeFromLayer(l.sourceNode, l.sourceLayer);
+    //     const target = this.getNodeFromLayer(l.targetNode, l.targetLayer);
+    //     const link = new Link(source, target, l.weight);
+    //     source.outLinks.push(link);
+    //     target.inLinks.push(link);
+    //
+    //
+    //     source.kout++;
+    //     target.kin++;
+    //
+    //     return link;
+    //     // }
+    //   });
+    //
+    //   // this.links = this.links.concat(this.interLinks);
+    //   // Array.prototype.push.apply(this.links,this.interLinks);
+    //   this.links = this.interLinks;
+    // }
+  }
+
+  nodeInsideInter(node){
+    let interLinks = node.parent.interLinks;
+
+    for (let i = 0; i < interLinks.length; i++){
+      if (interLinks[i].sourceNode === node.id){
+        return true;
+      }
+    }
+  }
+
+  getLinkByNode(node){
+    let interLinks = node.parent.interLinks;
+
+    for (let i = 0; i < interLinks.length; i++){
+      if (interLinks[i].sourceNode === node.id){
+        return interLinks[i];
+      }
+    }
   }
 
   connectInterLinks(){
@@ -278,6 +335,7 @@ class Network {
 
     // this.links = this.links.concat(this.interLinks);
     Array.prototype.push.apply(this.links,this.interLinks);
+    // this.links = this.interLinks;
   }
 
   search(name) {
