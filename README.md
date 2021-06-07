@@ -11,9 +11,13 @@ This is the first component that uploaded. We added the "Load json file" button 
 Containing the parseFTree function, the function recieves the ftree file, and parsed it to a new object that can be transform to a network. We added the option to add attributes to the nodes and inter-links edges to the netwrok.
 
 ## components/NetworkNavigator.js
+Responsible for the rendering, We added the option for changing the size of the nodes and the color.
 
 ## network
+Represent the network object.
 
 ## network-layout
+All the d3 shapes and colors are configure in this file.
 
 ## simulation
+Responsible for the layout of the network.
