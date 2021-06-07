@@ -132,12 +132,16 @@ class Network {
     this._nodes.set(child.id, child);
   }
 
+  // get interLinks(){
+  //   return this._
+  // }
+
   getNode(childId) {
     return this._nodes.get(childId);
   }
 
   getNodeFromLayer(childId, layerId) {
-    return this._nodes.get(layerId)._nodes.get(childId);
+    return this._nodes.get(layerId).getNode(childId);
   }
   get nodes() {
     if (!this._nodesArray) {
@@ -238,22 +242,26 @@ class Network {
     if (this.connected) return;
     this.connected = true;
     let result = []
+
+    // if (this.interLinks.length > 0){
+    //   Array.prototype.push.apply(this.links,this.interLinks);
+    // }
     for (let l of this.links) {
       const source = this.getNode(l.source);
-      let interLink = null;
-      if (source.parent != null && source.parent.id !== 'root' && this.nodeInsideInter(source)) {
-        interLink = this.getLinkByNode(source);
-        const sourceInter = this.getNodeFromLayer(interLink.sourceNode, interLink.sourceLayer);
-        const targetInter = this.getNodeFromLayer(interLink.targetNode, interLink.targetLayer);
-        const linkInter = new Link(sourceInter, targetInter, interLink.weight);
-        sourceInter.outLinks.push(linkInter);
-        targetInter.inLinks.push(linkInter);
-
-        sourceInter.kout++;
-        targetInter.kin++;
-
-        result.push(linkInter);
-      }
+      // let interLink = null;
+      // if (source.parent != null && source.parent.id !== 'root' && this.nodeInsideInter(source)) {
+      //   interLink = this.getLinkByNode(source);
+      //   const sourceInter = this.getNodeFromLayer(interLink.sourceNode, interLink.sourceLayer);
+      //   const targetInter = this.getNodeFromLayer(interLink.targetNode, interLink.targetLayer);
+      //   const linkInter = new Link(sourceInter, targetInter, interLink.weight);
+      //   sourceInter.outLinks.push(linkInter);
+      //   targetInter.inLinks.push(linkInter);
+      //   // sourceInter.parent.links.push(linkInter);
+      //   sourceInter.kout++;
+      //   targetInter.kin++;
+      //
+      //   result.push(linkInter);
+      // }
       const target = this.getNode(l.target);
       const link = new Link(source, target, l.flow);
       source.outLinks.push(link);
@@ -270,46 +278,37 @@ class Network {
     }
 
     this.links = result;
-    // if (this.parent != null && this.parent !== 'root' &&  this.nodeInsideInter(source)){
-    //   let interLink = this.getLinkByNode(source);
-    //
-    //   this.interLinks = this.interLinks.map(l => {
-    //     // if (l.sourceNode > 0 && l.sourceLayer > 0 && l.targetNode > 0 && l.targetLayer > 0) {
-    //     const source = this.getNodeFromLayer(l.sourceNode, l.sourceLayer);
-    //     const target = this.getNodeFromLayer(l.targetNode, l.targetLayer);
-    //     const link = new Link(source, target, l.weight);
-    //     source.outLinks.push(link);
-    //     target.inLinks.push(link);
-    //
-    //
-    //     source.kout++;
-    //     target.kin++;
-    //
-    //     return link;
-    //     // }
-    //   });
-    //
-    //   // this.links = this.links.concat(this.interLinks);
-    //   // Array.prototype.push.apply(this.links,this.interLinks);
-    //   this.links = this.interLinks;
-    // }
   }
 
   nodeInsideInter(node){
-    let interLinks = node.parent.interLinks;
+
+
+    let interLinks = this.getInterLinks(node.parent);
 
     for (let i = 0; i < interLinks.length; i++){
       if (interLinks[i].sourceNode === node.id){
         return true;
       }
     }
+
+    return false;
+  }
+
+  getInterLinks(net){
+    let parent = net.parent;
+
+    while (parent.id !== 'root'){
+      parent = parent.parent;
+    }
+
+    return parent.interLinks;
   }
 
   getLinkByNode(node){
-    let interLinks = node.parent.interLinks;
+    let interLinks = this.getInterLinks(node.parent);
 
     for (let i = 0; i < interLinks.length; i++){
-      if (interLinks[i].sourceNode === node.id){
+      if (interLinks[i].sourceNode === node.id && interLinks[i].sourceLayer === node.parent.id){
         return interLinks[i];
       }
     }
@@ -322,6 +321,8 @@ class Network {
       const source = this.getNodeFromLayer(l.sourceNode, l.sourceLayer);
       const target = this.getNodeFromLayer(l.targetNode, l.targetLayer);
       const link = new Link(source, target, l.weight);
+      source.parent.links.push(link);
+      target.parent.links.push(link)
       source.outLinks.push(link);
       target.inLinks.push(link);
 
@@ -330,11 +331,10 @@ class Network {
       target.kin++;
 
       return link;
-      // }
     });
 
     // this.links = this.links.concat(this.interLinks);
-    Array.prototype.push.apply(this.links,this.interLinks);
+    // Array.prototype.push.apply(this.links,this.interLinks);
     // this.links = this.interLinks;
   }
 

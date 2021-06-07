@@ -128,6 +128,8 @@ export default class NetworkLayout {
     this.network = network;
     this.nodes = network.nodes.filter((node) => node.shouldRender);
     this.links = network.links.filter((link) => link.shouldRender).reverse();
+    this.interLinks = network.interLinks.filter((link) => link.shouldRender).reverse();
+    // Array.prototype.push.apply(this.links,this.interLinks);
     network.visible = true;
 
     this.createElements();
@@ -178,6 +180,7 @@ export default class NetworkLayout {
       .attr("class", "link")
       .style("fill", this.style.linkFillColor);
 
+
     elements.link.accessors = {
       path: (l) => (linkByIndex(this.links)()(l) ? this.linkRenderer(l) : ""),
       lod: linkByIndex(this.links),
@@ -212,8 +215,7 @@ export default class NetworkLayout {
     elements.circle = elements.node
       .append("ellipse")
       .attr("r", this.style.nodeRadius)
-      // .style("fill", this.style.nodeFillColor)
-        .style("fill",  "url(#gradient)")
+      .style("fill", this.style.nodeFillColor)
       .style("stroke", this.style.nodeBorderColor)
       .style("stroke-width", this.style.nodeBorderWidth);
 
@@ -339,7 +341,7 @@ export default class NetworkLayout {
         .attr("cy", n => n.y);
     circle
         .style("fill", circle.accessors.fill)
-        .filter(n => n.shape === 'circle')
+        .filter(n => n.shape === 'ellipse')
         // .filter(this.style.nodeShape === 'circle')
         .attr("cx", n => n.x)
         .attr("cy", n => n.y)

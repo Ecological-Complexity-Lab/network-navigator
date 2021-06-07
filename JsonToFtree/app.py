@@ -1,22 +1,23 @@
 from flask import Flask
 import json
-import flask
-import requests
 from flask import request
+from flask_cors import CORS
 
 app = Flask(__name__)
 
-
-@app.route('/')
+cors = CORS(app)
+@app.route('/', methods=['POST'])
 def hello_world():
     return 'Hello World!'
 
-@app.route('/getFtree', methods=['GET'])
+@app.route('/getFtree', methods=['POST'])
+# @cross_origin(origin='localhost', headers=['Content- Type','Authorization'])
 def getFtreeFile():
     json_file = request.data
     multilayer_dict = json.loads(json_file)
     ftree_file = '*Modules\n'
     inter_layers = []
+    inter_edges = []
     num_of_layers = len(multilayer_dict['layers'])
 
     # Adding modules (layers)
@@ -28,7 +29,7 @@ def getFtreeFile():
     for link in multilayer_dict['links']:
         if link['source_layer'] != link['target_layer']:
             inter_layers.append((link['source_layer'], link['target_layer'], link['weight']))
-
+            inter_edges.append(link)
         add_node = str(link['source_layer']) + ':' + str(link['source_node']) + ' ' + str(link['weight']) + ' \"' + \
                    str(multilayer_dict['nodes'][link['source_node'] - 1]['name']) + '\" ' + str(link['source_node']) + '\n'
         if add_node not in ftree_file:
@@ -65,17 +66,38 @@ def getFtreeFile():
             edges_in_layers[current_layer].append(str(edge['source_node']) + ' ' + str(edge['target_node']) + ' ' + str(edge['weight']) + '\n')
             num_of_nodes_in_layer[current_layer].add(edge['source_node'])
             num_of_nodes_in_layer[current_layer].add(edge['target_node'])
+        else:
+            edges_in_layers[edge['source_layer']].append(str(edge['source_node']) + ' ' + str(edge['source_node']) + ' ' + str(edge['weight']) + '\n')
+
+            if edge['target_layer'] not in edges_in_layers:
+                edges_in_layers[edge['target_layer']] = []
+                num_of_nodes_in_layer[edge['target_layer']] = set()
+
+            edges_in_layers[edge['target_layer']].append(str(edge['target_node']) + ' ' + str(edge['target_node']) + ' ' + str(edge['weight']) + '\n')
+            num_of_nodes_in_layer[edge['source_layer']].add(edge['source_node'])
+            num_of_nodes_in_layer[edge['target_layer']].add(edge['target_node'])
 
     for key, value in edges_in_layers.items():
         ftree_file += '*Links ' + str(key) + ' 0 0 ' + str(len(value)) + ' ' + str(len(num_of_nodes_in_layer[key])) + '\n'
         for edge in value:
             ftree_file += edge
+
+
+    #Adding interlayer edges in node level
+    ftree_file += '*InterLinks\n'
+    for link in inter_edges:
+        ftree_file += str(link['source_layer']) + ' ' + str(link['source_node']) + ' ' + str(link['target_layer']) + ' ' + str(link['target_node']) + ' ' + str(link['weight']) + '\n'
+    ftree_file += '*Attributes\n'
+    for node in multilayer_dict['nodes']:
+        ftree_file += 'Node ' + str(node['id']) + '\n'
+        for key, value in node.items():
+            ftree_file += str(key) + ' ' + str(value) + '\n'
     response = app.response_class(
         ftree_file,
         status=200,
         mimetype="text/plain"
     )
-
+    response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
 if __name__ == '__main__':

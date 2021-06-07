@@ -57,8 +57,9 @@ export function connectedNodes({ nodes, links }) {
  * @return {Object[]} the connected links
  */
 export function connectedLinks({ nodes, links }) {
-  return links.filter(link =>
-    nodes.includes(link.source) && nodes.includes(link.target));
+  // return links.filter(link =>
+  //   nodes.includes(link.source) && nodes.includes(link.target));
+  return links;
 }
 
 /**

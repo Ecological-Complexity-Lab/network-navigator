@@ -9,7 +9,7 @@ import makeRenderStyle from "../lib/render-style";
 import Dispatch from "../context/Dispatch";
 
 function takeLargest(network, amount) {
-  let { nodes, links } = network;
+  let { nodes, links, interLinks } = network;
 
   nodes.forEach((node) => (node.shouldRender = false));
   links.forEach((link) => (link.shouldRender = false));
@@ -20,6 +20,7 @@ function takeLargest(network, amount) {
 
   nodes.forEach((node) => (node.shouldRender = true));
   links.forEach((link) => (link.shouldRender = true));
+  interLinks.forEach((link) => (link.shouldRender = true));
 }
 
 export default class NetworkNavigator extends React.Component {

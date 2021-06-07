@@ -289,14 +289,6 @@ export default class LoadNetwork extends React.Component {
                 htmlFor="upload"
             />
           </Step.Group>
-          {/*<input*/}
-          {/*    style={{ visibility: "hidden" }}*/}
-          {/*    type='file'*/}
-          {/*    id='uploadJson'*/}
-          {/*    onChange={() => this.loadJsonFile(this.input.files[0])}*/}
-          {/*    accept=".json"*/}
-          {/*    ref={input => this.input = input}*/}
-          {/*/>*/}
 
           {progressVisible &&
           <div style={{ padding: "50px 100px 0" }}>
