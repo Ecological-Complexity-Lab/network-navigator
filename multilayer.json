@@ -1,0 +1,210 @@
+{
+  "layers": [
+    {
+      "id": 1,
+      "name": "AX",
+      "description": "represent predation relation in patch x"
+    },
+    {
+      "id": 2,
+      "name": "AY",
+      "description": "represent predation relation in patch y "
+    },
+    {
+      "id": 3,
+      "name": "BX",
+      "description": "represent parasitisam relation in patch y"
+    },
+    {
+      "id": 4,
+      "name": "BY",
+      "description": "represent parasitisam relation in patch x"
+    }
+  ],
+  "nodes": [
+    {
+      "id": 1,
+      "name": "Pelican",
+      "level": 0,
+      "type": "population",
+      "Attribute": [1]
+    },
+    {
+      "id": 2,
+      "name": "fish",
+      "level": 0,
+      "type": "population",
+      "Attribute": [1]
+    },
+    {
+      "id": 3,
+      "name": "cancer",
+      "level": 0,
+      "type": "population",
+      "Attribute": [2]
+    },
+    {
+      "id": 4,
+      "name": "worm",
+      "level": 0,
+      "type": "population",
+      "Attribute": [2]
+    },
+    {
+      "id": 5,
+      "name": "bird",
+      "level": 0,
+      "type": "population",
+      "Attribute": [2]
+    },
+    {
+      "id": 6,
+      "name": "bacteria",
+      "level": 0,
+      "type": "population",
+      "Attribute": [2]
+    }
+  ],
+  "links": [
+    {
+      "id": 1112,
+      "type": "predation",
+      "direction": "directed",
+      "source_layer": 1,
+      "target_layer": 1,
+      "source_node": 1,
+      "target_node": 2,
+      "weight": 1
+    },
+    {
+      "id": 1111,
+      "type": "predation",
+      "direction": "directed",
+      "source_layer": 1,
+      "target_layer": 1,
+      "source_node": 1,
+      "target_node": 3,
+      "weight": 1
+    },
+    {
+      "id": 1114,
+      "type": "interlayer",
+      "direction": "undirected",
+      "source_layer": 1,
+      "target_layer": 2,
+      "source_node": 1,
+      "target_node": 1,
+      "weight": 1
+    },
+    {
+      "id": 1117,
+      "type": "predation",
+      "direction": "directed",
+      "source_layer": 2,
+      "target_layer": 2,
+      "source_node": 1,
+      "target_node": 2,
+      "weight": 1
+    },
+    {
+      "id": 1115,
+      "type": "predation",
+      "direction": "directed",
+      "source_layer": 2,
+      "target_layer": 2,
+      "source_node": 1,
+      "target_node": 5,
+      "weight": 1
+    },
+    {
+      "id": 1119,
+      "type": "parasitism",
+      "direction": "directed",
+      "source_layer": 3,
+      "target_layer": 3,
+      "source_node": 1,
+      "target_node": 4,
+      "weight": 1
+    },
+    {
+      "id": 1121,
+      "type": "interlayer",
+      "direction": "undirected",
+      "source_layer": 3,
+      "target_layer": 1,
+      "source_node": 2,
+      "target_node": 2,
+      "weight": 1
+    },
+    {
+      "id": 1113,
+      "type": "predation",
+      "direction": "directed",
+      "source_layer": 1,
+      "target_layer": 1,
+      "source_node": 2,
+      "target_node": 3,
+      "weight": 1
+    },
+    {
+      "id": 1116,
+      "type": "predation",
+      "direction": "directed",
+      "source_layer": 2,
+      "target_layer": 2,
+      "source_node": 2,
+      "target_node": 5,
+      "weight": 1
+    },
+    {
+      "id": 1120,
+      "type": "parasitism",
+      "direction": "directed",
+      "source_layer": 3,
+      "target_layer": 3,
+      "source_node": 2,
+      "target_node": 4,
+      "weight": 1
+    },
+    {
+      "id": 1124,
+      "type": "interlayer",
+      "direction": "undirected",
+      "source_layer": 4,
+      "target_layer": 3,
+      "source_node": 4,
+      "target_node": 4,
+      "weight": 1
+    },
+    {
+      "id": 1122,
+      "type": "parasitism",
+      "direction": "directed",
+      "source_layer": 2,
+      "target_layer": 4,
+      "source_node": 4,
+      "target_node": 6,
+      "weight": 1
+    },
+    {
+      "id": 1123,
+      "type": "parasitism",
+      "direction": "directed",
+      "source_layer": 4,
+      "target_layer": 4,
+      "source_node": 5,
+      "target_node": 4,
+      "weight": 1
+    },
+    {
+      "id": 1118,
+      "type": "interlayer",
+      "direction": "undirected",
+      "source_layer": 2,
+      "target_layer": 4,
+      "source_node": 5,
+      "target_node": 5,
+      "weight": 1
+    }
+  ]
+}
