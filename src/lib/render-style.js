@@ -27,11 +27,12 @@ export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlo
   const nodeFill = [interpolateGreens(25 / 1000), interpolateGreens(999 / 1000)];
   const nodeBorder = [interpolateGreens(3 / 9), interpolateGreens(6 / 9)];
   const linkFill = ["#9BCDFD", "#064575"];
-  const nodeRadius = scaleSqrt().domain([0, maxNodeFlow]).range([10, 70]);
-  const nodeFillColor = scaleSqrt().domain([0, maxNodeFlow]).range(nodeFill);
-  const nodeBorderWidth = scaleSqrt().domain([0, maxNodeExitFlow]).range([2, 5]);
-  const nodeBorderColor = scaleSqrt().domain([0, maxNodeExitFlow]).range(nodeBorder);
-  const nodeShape = network.totalChildren ? 'rect' : 'shape';
+  const numOfChildren =  network.totalChildren ? network.totalChildren : 1;
+  const nodeRadius = scaleSqrt().domain([0, numOfChildren*10]).range([10, 70]);
+  const nodeFillColor = scaleSqrt().domain([0, numOfChildren*10]).range(nodeFill);
+  const nodeBorderWidth = scaleSqrt().domain([0, numOfChildren*10]).range([2, 5]);
+  const nodeBorderColor = scaleSqrt().domain([0, numOfChildren*10]).range(nodeBorder);
+  // const nodeShape = network.totalChildren ? 'rect' : 'shape';
   const linkFillColor = scaleSqrt().domain([0, maxLinkFlow]).range(linkFill);
   const linkWidth = scaleSqrt().domain([0, maxLinkFlow]).range([2, 15]);
 
@@ -40,13 +41,13 @@ export default function makeRenderStyle(maxNodeFlow, maxNodeExitFlow, maxLinkFlo
   const linkBend = scaleLinear().domain([50, 250]).range([0, 40]).clamp(true);
 
   return {
-    nodeShape,
+    // nodeShape,
     nodeFill,
     linkFill,
-    nodeRadius: node => nodeRadius(node.flow),
-    nodeFillColor: node => nodeFillColor(node.flow),
-    nodeBorderColor: node => nodeBorderColor(node.exitFlow),
-    nodeBorderWidth: node => nodeBorderWidth(node.exitFlow),
+    nodeRadius: node => nodeRadius(node.totalChildren ? node.totalChildren*10 : 1),
+    nodeFillColor: node => nodeFillColor(node.totalChildren ? node.totalChildren : 1),
+    nodeBorderColor: node => nodeBorderColor(node.totalChildren ? node.totalChildren*10 : 1),
+    nodeBorderWidth: node => nodeBorderWidth(node.totalChildren ? node.totalChildren*10 : 1),
     linkFillColor: link => linkFillColor(link.flow),
     linkWidth: link => linkWidth(link.flow),
     searchMarkRadius: node =>
