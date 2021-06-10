@@ -128,7 +128,7 @@ export default class NetworkLayout {
     this.network = network;
     this.nodes = network.nodes.filter((node) => node.shouldRender);
     this.links = network.links.filter((link) => link.shouldRender).reverse();
-    this.interLinks = network.interLinks.filter((link) => link.shouldRender).reverse();
+    // this.interLinks = network.interLinks.filter((link) => link.shouldRender).reverse();
     // Array.prototype.push.apply(this.links,this.interLinks);
     network.visible = true;
 
@@ -150,24 +150,24 @@ export default class NetworkLayout {
 
     parent.selectAll("*").remove();
     labels.selectAll("*").remove();
-    var gradient = parent.append("svg:defs")
-        .append("svg:linearGradient")
-        .attr("id", "gradient")
-        .attr("x1", "0%")
-        .attr("y1", "0%")
-        .attr("x2", "100%")
-        .attr("y2", "100%")
-        .attr("spreadMethod", "pad");
-
-    gradient.append("svg:stop")
-        .attr("offset", "0%")
-        .attr("stop-color", "#0c0")
-        .attr("stop-opacity", 1);
-
-    gradient.append("svg:stop")
-        .attr("offset", "100%")
-        .attr("stop-color", "#c00")
-        .attr("stop-opacity", 1);
+    // var gradient = parent.append("svg:defs")
+    //     .append("svg:linearGradient")
+    //     .attr("id", "gradient")
+    //     .attr("x1", "0%")
+    //     .attr("y1", "0%")
+    //     .attr("x2", "100%")
+    //     .attr("y2", "100%")
+    //     .attr("spreadMethod", "pad");
+    //
+    // gradient.append("svg:stop")
+    //     .attr("offset", "0%")
+    //     .attr("stop-color", "#0c0")
+    //     .attr("stop-opacity", 1);
+    //
+    // gradient.append("svg:stop")
+    //     .attr("offset", "100%")
+    //     .attr("stop-color", "#c00")
+    //     .attr("stop-opacity", 1);
 
 
     elements.link = parent
@@ -193,7 +193,7 @@ export default class NetworkLayout {
             .style("stroke", "#f48074");
       }
       else{
-        d3.select(this).select("ellipse")
+        d3.select(this).select("circle")
             .style("stroke", "#f48074");
 
       }
@@ -213,7 +213,7 @@ export default class NetworkLayout {
       .call(this.onDrag);
 
     elements.circle = elements.node
-      .append("ellipse")
+      .append("circle")
       .attr("r", this.style.nodeRadius)
       .style("fill", this.style.nodeFillColor)
       .style("stroke", this.style.nodeBorderColor)
@@ -333,22 +333,22 @@ export default class NetworkLayout {
       .attr("cx", n => n.x)
       .attr("cy", n => n.y);
 
-    path
-        .style("fill", circle.accessors.fill)
-        .filter(n => n.totalChildren)
-        .attr('d', n=> polygon(this.getCoordinates(n)))
-        .attr("cx", n => n.x)
-        .attr("cy", n => n.y);
+    // path
+    //     .style("fill", circle.accessors.fill)
+    //     .filter(n => n.totalChildren)
+    //     .attr('d', n=> polygon(this.getCoordinates(n)))
+    //     .attr("cx", n => n.x)
+    //     .attr("cy", n => n.y);
     circle
         .style("fill", circle.accessors.fill)
-        .filter(n => n.shape === 'ellipse')
-        // .filter(this.style.nodeShape === 'circle')
+        // .filter(n => n.shape === 'ellipse')
         .attr("cx", n => n.x)
         .attr("cy", n => n.y)
-        .attr("rx", n => this.renderStyle.nodeRadius(n)*3)
-        .attr("ry", n => this.renderStyle.nodeRadius(n))
-        .attr('width', circle.accessors.r)
-        .attr('height', circle.accessors.r);
+        .attr("r", circle.accessors.r)
+    // .attr("rx", n => this.renderStyle.nodeRadius(n))
+        // .attr("ry", n => this.renderStyle.nodeRadius(n))
+        // .attr('width', circle.accessors.r)
+        // .attr('height', circle.accessors.r);
 
     searchMark
       .attr("r", this.style.searchMarkRadius)

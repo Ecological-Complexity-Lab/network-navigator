@@ -56,7 +56,7 @@ class Node {
   }
 
   get shape(){
-    return this.totalChildren ? 'rect': 'circle';
+    return this.totalChildren ? 'rect': 'ellipse';
   }
   set shape(shape){
     this._shape = shape
@@ -243,48 +243,26 @@ class Network {
     this.connected = true;
     let result = []
 
-    // if (this.interLinks.length > 0){
-    //   Array.prototype.push.apply(this.links,this.interLinks);
-    // }
-    for (let l of this.links) {
+    this.links = this.links.map(l => {
       const source = this.getNode(l.source);
-      // let interLink = null;
-      // if (source.parent != null && source.parent.id !== 'root' && this.nodeInsideInter(source)) {
-      //   interLink = this.getLinkByNode(source);
-      //   const sourceInter = this.getNodeFromLayer(interLink.sourceNode, interLink.sourceLayer);
-      //   const targetInter = this.getNodeFromLayer(interLink.targetNode, interLink.targetLayer);
-      //   const linkInter = new Link(sourceInter, targetInter, interLink.weight);
-      //   sourceInter.outLinks.push(linkInter);
-      //   targetInter.inLinks.push(linkInter);
-      //   // sourceInter.parent.links.push(linkInter);
-      //   sourceInter.kout++;
-      //   targetInter.kin++;
-      //
-      //   result.push(linkInter);
-      // }
       const target = this.getNode(l.target);
       const link = new Link(source, target, l.flow);
       source.outLinks.push(link);
       target.inLinks.push(link);
 
-      if (l.source !== l.target) {
+      if(l.source !== l.target){
         source.kout++;
         target.kin++;
       } else {
         target.kin++;
       }
 
-      result.push(link);
-    }
-
-    this.links = result;
+      return link;
+    });
   }
 
   nodeInsideInter(node){
-
-
     let interLinks = this.getInterLinks(node.parent);
-
     for (let i = 0; i < interLinks.length; i++){
       if (interLinks[i].sourceNode === node.id){
         return true;
@@ -300,7 +278,6 @@ class Network {
     while (parent.id !== 'root'){
       parent = parent.parent;
     }
-
     return parent.interLinks;
   }
 
@@ -315,7 +292,6 @@ class Network {
   }
 
   connectInterLinks(){
-
     this.interLinks = this.interLinks.map(l => {
       // if (l.sourceNode > 0 && l.sourceLayer > 0 && l.targetNode > 0 && l.targetLayer > 0) {
       const source = this.getNodeFromLayer(l.sourceNode, l.sourceLayer);
@@ -474,7 +450,7 @@ export function connectLinks(root) {
     }
   }
 
-  root.connectInterLinks();
+  // root.connectInterLinks();
 }
 
 /**
