@@ -14,7 +14,6 @@ const SliderCheckbox = (props) => <MyCheckbox slider {...props} />;
 
 export default function Settings(props) {
   const {
-    // nodeSize,
     nodeScale,
     linkScale,
     labelsVisible,
@@ -27,26 +26,23 @@ export default function Settings(props) {
 
   let sizeOptions = []
   sizeOptions = [
-      // {key: 'flow', text: 'flow', value: 'flow'},
       {key: 'Degree', text: 'Degree', value: 'Degree'},
       {key: 'nodeSize', text: 'nodeSize', value: 'nodes'}
       ];
   let colorOptions = [];
+
+  // Adding attributes to the color options
+  colorOptions.push({key: 'colorD', text: 'Degree', value: 'Degree'});
+  colorOptions.push({key: 'colorN', text: 'node Size', value: 'nodeSize'});
+
   if(selectedNode.attributes) {
-      // colorOptions.push({key: 'color', text: 'flow', value: selectedNode.flow});
-      colorOptions.push({key: 'color', text: 'Degree', value: 'Degree'});
       for (const [key, value] of Object.entries(selectedNode.attributes)) if (!isNaN(value) && key !== 'id') {
-          colorOptions.push({key:'color', text:key.toString(), value: key.toString()})
+          colorOptions.push({key:'color' + key.toString(), text:key.toString(), value: key.toString()})
       }
   }
 
     return (
     <React.Fragment>
-      {/*<SliderCheckbox*/}
-      {/*  label={`Module size based on: ${nodeSize}`}*/}
-      {/*  checked={nodeSize === "flow"}*/}
-      {/*  onChange={(e, { checked }) => dispatch({ type: "nodeSize", value: checked ? "flow" : "nodes" })}*/}
-      {/*/>*/}
       <SliderCheckbox
         label={`Module radius scale: ${nodeScale}`}
         checked={nodeScale === "root"}
@@ -101,7 +97,7 @@ export default function Settings(props) {
             // defaultValue={sizeOptions[0].value}
             onChange={(e, data ) => dispatch({ type: "nodeSize", value: data ? data.value : "flow" })}
         />
-      {!selectedNode.nodes && <Dropdown
+      {selectedNode.id !== 'root' && <Dropdown
             placeholder='Change node color by:'
             fluid
             clearable
@@ -111,4 +107,4 @@ export default function Settings(props) {
         />}
     </React.Fragment>
   );
-}
+};
