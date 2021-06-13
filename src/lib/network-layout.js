@@ -171,7 +171,7 @@ export default class NetworkLayout {
             .style("stroke", "#f48074");
       }
       else{
-        d3.select(this).select("circle")
+        d3.select(this).select("ellipse")
             .style("stroke", "#f48074");
 
       }
@@ -191,7 +191,7 @@ export default class NetworkLayout {
       .call(this.onDrag);
 
     elements.circle = elements.node
-      .append("circle")
+      .append("ellipse")
       .attr("r", this.style.nodeRadius)
       .style("fill", this.style.nodeFillColor)
       .style("stroke", this.style.nodeBorderColor)
@@ -316,10 +316,12 @@ export default class NetworkLayout {
         .attr('d', n=> polygon(this.getCoordinates(n)));
     circle
         .style("fill", circle.accessors.fill)
-        // .filter(n => n.shape === 'circle')
+        .filter(n => n.shape === 'circle')
         // .filter(this.style.nodeShape === 'circle')
         .attr("cx", n => n.x)
         .attr("cy", n => n.y)
+        .attr("rx", n => this.renderStyle.nodeRadius(n)*3)
+        .attr("ry", n => this.renderStyle.nodeRadius(n))
         .attr('width', circle.accessors.r)
         .attr('height', circle.accessors.r);
 
