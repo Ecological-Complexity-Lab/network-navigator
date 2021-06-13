@@ -90,7 +90,7 @@ export default class NetworkNavigator extends React.Component {
     if(nodeColor !== prevProps.nodeColor) {
       const scale = nodeScale === "linear" ? d3.scaleLinear : d3.scaleSqrt;
 
-      if (nodeColor !== 'Degree' && nodeColor !== 'flow') {
+      if (nodeColor !== 'Degree' && nodeColor !== 'nodeSize') {
         const nodeFillColor = scale().domain([0, network.maxAttributes[nodeColor]]).range(this.renderStyle.nodeFill);
         this.renderStyle.nodeFillColor =
             node => node['attributes'] ? nodeFillColor(node['attributes'][nodeColor]): nodeFillColor(1);
@@ -100,7 +100,7 @@ export default class NetworkNavigator extends React.Component {
              node =>  node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(node.kin+node.kout);
       }
       else{
-        const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
+        const nodeFillColor = scale().domain([0, network.totalChildren*10]).range(this.renderStyle.nodeFill);
         this.renderStyle.nodeFillColor =
           node => node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(1);
       }

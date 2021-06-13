@@ -317,7 +317,6 @@ export default class NetworkLayout {
     circle
         .style("fill", circle.accessors.fill)
         .filter(n => n.shape === 'circle')
-        // .filter(this.style.nodeShape === 'circle')
         .attr("cx", n => n.x)
         .attr("cy", n => n.y)
         .attr("rx", n => this.renderStyle.nodeRadius(n)*3)
