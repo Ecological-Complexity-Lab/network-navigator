@@ -70,7 +70,9 @@ export default function parseFTree(rows) {
   const result = {
     data: {
       tree: [],
-      links: []
+      links: [],
+      attributes: {},
+      interLinks: []
     },
     errors: [],
     meta: {
@@ -79,7 +81,7 @@ export default function parseFTree(rows) {
   };
 
   const modules = new Map();
-  const { tree, links } = result.data;
+  const { tree, links, attributes, interLinks } = result.data;
 
   let i = 0;
 
@@ -154,11 +156,38 @@ export default function parseFTree(rows) {
 
   // 3. Parse links section
   let isOldFormat = false; // missing enterFlow before Infomap v1.0.0
+
   for (; i < rows.length; i++) {
     const row = rows[i];
 
+    if (/^\*InterLinks/i.test(row[0].toString())) {
+      i++;
+      for (; i < rows.length; i++) {
+        if (/^\*Attributes/i.test(rows[i][0].toString())) {
+          break;
+        }
+        else{
+          interLinks.push({sourceLayer: rows[i][0], sourceNode: rows[i][1], targetLayer: rows[i][2], targetNode: rows[i][3], weight: rows[i][4]})
+        }
+      }
+    }
+
+    if (/^\*Attributes/i.test(rows[i][0].toString())) {
+      i++;
+      let currentNode = rows[i][1];
+      for (; i < rows.length; i++) {
+        if (rows[i][0] === 'Node'){
+          currentNode = rows[i][1];
+          attributes[currentNode] = {};
+          i++;
+        }
+        attributes[currentNode][rows[i][0]] = rows[i][1];
+        // console.log(rows[i])
+      }
+      break;
+    }
     // 3a. Parse link header #*Links path enterFlow exitFlow numEdges numChildren
-    if (/^\*Links/i.test(row[0].toString())) {
+    if (/^\*Links/i.test(rows[i][0].toString())) {
       if (row.length < 6) {
         if (row.length === 5) {
           // result.errors.push(`The ftree link header is missing one field, the required six fields are available from Infomap v1.0.`);

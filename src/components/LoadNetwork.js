@@ -7,7 +7,7 @@ import Background from "../images/Background.svg";
 import parseFTree from "../io/ftree";
 import networkFromFTree from "../io/network-from-ftree";
 import parseFile from "../io/parse-file";
-
+// import parseJson from "../io/parse-json";
 
 const errorState = err => ({
   progressError: true,
@@ -80,10 +80,6 @@ export default class LoadNetwork extends React.Component {
 
         const ftree = parseFTree(parsed.data);
 
-        if (ftree.errors.length) {
-          throw new Error(ftree.errors[0]);
-        }
-
         const network = networkFromFTree(ftree);
 
         this.setState({
@@ -104,7 +100,7 @@ export default class LoadNetwork extends React.Component {
   };
 
   loadExampleData = () => {
-    const filename = "multilayer_data.ftree";
+    const filename = "citation_data.ftree";
 
     this.setState({
       progressVisible: true,
@@ -121,7 +117,14 @@ export default class LoadNetwork extends React.Component {
         console.log(err);
       });
   };
-
+  handleFileInput = (file)=>{
+    if (file.name.split('.').pop() === "ftree"){
+      this.loadNetwork(file);
+    }
+    else{
+      this.loadJsonFile(file);
+    }
+  }
   loadJsonFile = (jsonFile) =>{
     this.setState({
       progressVisible: true,
@@ -130,9 +133,19 @@ export default class LoadNetwork extends React.Component {
       progressError: false
     });
 
-    fetch(`/navigator/${jsonFile}`)
+    const url = 'http://127.0.0.1:5000/getFtree';
+    const requestMetaData = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+        body: jsonFile,
+      crossDomain: true
+    };
+
+    fetch(url, requestMetaData)
         .then(res => res.text())
-        .then(file => this.loadNetwork(file, filename))
+        .then(file => this.loadNetwork(file))
         .catch((err) => {
           this.setState(errorState(err));
           console.log(err);
@@ -228,38 +241,38 @@ export default class LoadNetwork extends React.Component {
               htmlFor="upload"
             />
           </Step.Group>
+          <input
+              style={{ visibility: "hidden" }}
+              type='file'
+              id='upload'
+              onChange={() => this.handleFileInput(this.input.files[0])}
+              accept=".ftree, .json"
+              ref={input => this.input = input}
+          />
 
           <Divider horizontal style={{ margin: "20px 100px 30px 100px" }} content="Or"/>
 
           <Step.Group>
             <Step
                 disabled={disabled}
+                as="label"
                 icon="book"
                 title="Load json file"
                 description="Multilayer network"
                 link
-                htmlFor="uploadJson"
+                active={!disabled}
+                htmlFor="upload"
             />
           </Step.Group>
+          {/*<input*/}
+          {/*    style={{ visibility: "hidden" }}*/}
+          {/*    type='file'*/}
+          {/*    id='uploadJson'*/}
+          {/*    onChange={() => this.loadJsonFile(this.input.files[0])}*/}
+          {/*    accept=".json"*/}
+          {/*    ref={input => this.input = input}*/}
+          {/*/>*/}
 
-          <input
-            style={{ visibility: "hidden" }}
-            type='file'
-            id='upload'
-            onChange={() => this.loadNetwork(this.input.files[0])}
-            accept=".ftree"
-            ref={input => this.input = input}
-          />
-
-
-          <input
-              style={{ visibility: "hidden" }}
-              type='file'
-              id='uploadJson'
-              onChange={() => this.loadJsonFile(this.input.files[0])}
-              accept=".json"
-              ref={input => this.input = input}
-          />
           {progressVisible &&
           <div style={{ padding: "50px 100px 0" }}>
             <Progress

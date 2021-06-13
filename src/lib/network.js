@@ -24,7 +24,7 @@ const node = () => ({
   kin: 0,
   kout: 0,
   inLinks: [],
-  outLinks: []
+  outLinks: [],
 });
 
 
@@ -38,6 +38,8 @@ class Node {
     this.name = name.toString();
     this.physicalId = physicalId;
     this.occurred = new Map();
+    this.attributes = new Map();
+    this._shape = '';
   }
 
   /**
@@ -51,6 +53,13 @@ class Node {
    */
   static create(id, name, flow, physicalId) {
     return Object.assign(new Node(name, physicalId), treeNode(id), node(), hasFlow(flow), isRenderable);
+  }
+
+  get shape(){
+    return this.totalChildren ? 'rect': 'circle';
+  }
+  set shape(shape){
+    this._shape = shape
   }
 }
 
@@ -106,6 +115,7 @@ class Network {
     this.visible = false;
     this.connected = false;
     this.occurrences = new Map();
+    this.maxAttributes = new Map();
   }
 
   /**
@@ -230,8 +240,16 @@ class Network {
       const link = new Link(source, target, l.flow);
       source.outLinks.push(link);
       target.inLinks.push(link);
-      source.kout++;
-      target.kin++;
+
+      if(l.source !== l.target){
+        source.kout++;
+        target.kin++;
+      }
+      else{
+        target.kin++;
+      }
+
+
       return link;
     });
   }

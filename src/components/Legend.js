@@ -13,7 +13,7 @@ const nodes = [
     size: 25,
     strokeWidth: 5,
     fill: "rgb(188, 228, 182)",
-    stroke: "rgb(96, 181, 113)"
+    stroke: "rgb(10,159,40)"
   },
   {
     label: "B",
@@ -22,7 +22,7 @@ const nodes = [
     size: 30,
     strokeWidth: 2.5,
     fill: "rgb(181, 225, 175)",
-    stroke: "rgb(102, 185, 117)"
+    stroke: "rgb(13,122,122)"
   }
 ];
 

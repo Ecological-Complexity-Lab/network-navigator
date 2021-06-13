@@ -22,8 +22,9 @@ import TreePath from "../lib/treepath";
 export default function networkFromFTree(ftree) {
   const root = Network.createNetwork("root");
   root.directed = ftree.meta.directed;
-  const { tree, links } = ftree.data;
+  const { tree, links, attributes, interLinks } = ftree.data;
 
+  root.interLinks = interLinks;
   // Create the tree structure
   links.forEach((node) => {
     if (node.path === "root") {
@@ -47,6 +48,10 @@ export default function networkFromFTree(ftree) {
       childNode.enterFlow = node.enterFlow;
       childNode.exitFlow = node.exitFlow;
       childNode.links = node.links;
+
+      if(node){
+
+      }
     }
   });
 
@@ -76,6 +81,29 @@ export default function networkFromFTree(ftree) {
     childNode.path = TreePath.join(parent.path, childNode.id);
     parent.addNode(childNode);
   });
+
+
+  var i,j;
+   if (Object.keys(attributes).length > 0) {
+    for (i = 0; i < root.nodes.length; ++i) {
+      for (j = 0; j < root.nodes[i].nodes.length; ++j) {
+        const attribute = attributes[root.nodes[i].nodes[j].id]
+        root.nodes[i].nodes[j].attributes = attribute;
+
+        for (const [key, value] of Object.entries(attribute)) {
+          if (!isNaN(value) && key !== 'id') {
+            if (key in root.maxAttributes) {
+              if (value > root.maxAttributes[key]) {
+                root.maxAttributes[key] = value;
+              }
+            } else {
+              root.maxAttributes[key] = value;
+            }
+          }
+        }
+      }
+    }
+   }
 
   Network.connectLinks(root);
 

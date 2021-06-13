@@ -24,6 +24,7 @@ const countLeafNodes = (node) => {
 };
 
 export default function SelectedNode(props) {
+  var attributes_rows = []
   const { node, directed } = props;
   const [name, setName] = useState(node.name);
   const { dispatch } = useContext(Dispatch);
@@ -40,6 +41,21 @@ export default function SelectedNode(props) {
 
   const isRoot = node.path.toString() === "root";
 
+  node.attributes && Object.keys(props.node.attributes).forEach((subject, idx) => {
+        if (subject !== 'id' && subject !== 'name') {
+          attributes_rows.push(
+          <Table.Row key={idx}>
+            <Popup
+                trigger={<Table.Cell content={subject}/>}
+                size='tiny'
+                content='Atrribute'
+            />
+            <Table.Cell content={props.node.attributes[subject]}/>
+          </Table.Row>);
+        }
+  });
+
+
   return (
     <Table celled singleLine striped compact size="small">
       <Table.Body>
@@ -47,7 +63,7 @@ export default function SelectedNode(props) {
           <Popup
             trigger={<Table.Cell width={5} content='Name'/>}
             size='tiny'
-            content='The node name, or the names of the largest nodes contained within.'
+            content={node.totalChildren != null ? 'The layer name' : 'The Node name'}
           />
           <Table.Cell selectable style={{ padding: "0 0 0 8px" }}>
             <Input
@@ -60,40 +76,12 @@ export default function SelectedNode(props) {
         </Table.Row>
         <Table.Row>
           <Popup
-            trigger={<Table.Cell content='Tree path'/>}
+            trigger={<Table.Cell  content={node.totalChildren != null ? 'layer' : 'Node'}/>}
             size='tiny'
-            content='Colon separated path in the tree from the root to finest-level modules.'
+            content={node.totalChildren != null ? 'The layer id' : 'The Node id'}
           />
-          <Table.Cell content={node.path.toString()}/>
+          <Table.Cell content={node.totalChildren != null ? node.path.toString() : node.physicalId}/>
         </Table.Row>
-        <Table.Row>
-          <Popup
-            trigger={<Table.Cell content='Flow'/>}
-            size='tiny'
-            content='The flow contained in this node.'
-          />
-          <Table.Cell content={(+node.flow).toPrecision(4)}/>
-        </Table.Row>
-        {node.enterFlow != null &&
-        <Table.Row>
-          <Popup
-            trigger={<Table.Cell content='Enter flow'/>}
-            size='tiny'
-            content='The module enter flow.'
-          />
-          <Table.Cell content={(+node.enterFlow).toPrecision(4)}/>
-        </Table.Row>
-        }
-        {node.exitFlow != null &&
-        <Table.Row>
-          <Popup
-            trigger={<Table.Cell content='Exit flow'/>}
-            size='tiny'
-            content='The module exit flow.'
-          />
-          <Table.Cell content={(+node.exitFlow).toPrecision(4)}/>
-        </Table.Row>
-        }
         {isRoot && directed &&
         <Table.Row>
           <Popup
@@ -114,12 +102,12 @@ export default function SelectedNode(props) {
           <Table.Cell content={node.kout}/>
         </Table.Row>
         }
-        {isRoot && !directed &&
+        {node.totalChildren == null && !directed &&
         <Table.Row>
           <Popup
             trigger={<Table.Cell content='Degree'/>}
             size='tiny'
-            content='The number of links to this node.'
+            content='The number of edges to this node.'
           />
           <Table.Cell content={node.kin + node.kout}/>
         </Table.Row>
@@ -129,7 +117,7 @@ export default function SelectedNode(props) {
           <Popup
             trigger={<Table.Cell content='Nodes'/>}
             size='tiny'
-            content='The number of nodes contained within this module.'
+            content='The number of nodes contained within this layer.'
           />
           <Popup
             trigger={<Table.Cell content={count(node.nodes)}/>}
@@ -141,9 +129,9 @@ export default function SelectedNode(props) {
         {node.links &&
         <Table.Row>
           <Popup
-            trigger={<Table.Cell content='Links'/>}
+            trigger={<Table.Cell content='Edges in layer'/>}
             size='tiny'
-            content='The number of links contained within this module.'
+            content='The number of edges contained within this layer.'
           />
           <Popup
             trigger={<Table.Cell content={count(node.links)}/>}
@@ -157,7 +145,7 @@ export default function SelectedNode(props) {
           <Popup
             trigger={<Table.Cell content='Leaf nodes'/>}
             size='tiny'
-            content='The number of leaf nodes contained within this module and its children.'
+            content='The number of leaf nodes contained within this layer and its children.'
           />
           <Popup
             trigger={<Table.Cell content={countLeafNodes(node)}/>}
@@ -166,6 +154,7 @@ export default function SelectedNode(props) {
           />
         </Table.Row>
         }
+        {attributes_rows}
       </Table.Body>
     </Table>
   );

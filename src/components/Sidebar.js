@@ -47,7 +47,7 @@ export default function Sidebar(props) {
     </Menu.Item>
     <Menu.Item>
       <Header as="h4">
-        {selectedNode.physicalId ? "Selected node" : "Selected module"}
+        {selectedNode.physicalId ? "Selected node" : "Selected Layer"}
       </Header>
       <SelectedNode
         node={selectedNode}
