@@ -99,9 +99,6 @@ export default class NetworkNavigator extends React.Component {
         this.renderStyle.nodeFillColor =
              node =>  node.totalChildren ? nodeFillColor(node.totalChildren) : nodeFillColor(node.kin+node.kout);
       }
-      // else if (nodeColor === 'flow'){
-      //   this.renderStyle.nodeFillColor = node => nodeFillColor(node.flow);
-      // }
       else{
         const nodeFillColor = scale().domain([0, network.totalChildren]).range(this.renderStyle.nodeFill);
         this.renderStyle.nodeFillColor =
