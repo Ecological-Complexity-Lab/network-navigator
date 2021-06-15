@@ -20,7 +20,7 @@ Represent the network object.
 All the d3 shapes and colors are configured in this file.
 
 
-Changes made from the upstream mapequation/network-navigator:
+### Changes made from the upstream mapequation/network-navigator:
 * Changed Shape of the layers to poligon and shpae of the nodes to ellipse.
 * option of atrributes for each node, and present them in the side bar under selected node.
 * Changing the size of the node by degree.
