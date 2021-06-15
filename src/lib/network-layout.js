@@ -497,14 +497,14 @@ export default class NetworkLayout {
     let _nodeX = node => node.x;
     let _nodeY = node => node.y;
     let _nodeRadius = node => this.renderStyle.nodeRadius(node);
-    const x0 = _nodeX(node) - _nodeRadius(node)*1.5 - _nodeRadius(node)*3;
-    const y0 = _nodeY(node) + _nodeRadius(node)*1.5;
-    const x1 = _nodeX(node) - _nodeRadius(node)*1.5;
-    const y1 = _nodeY(node) - _nodeRadius(node)*1.5;
-    const x2 = _nodeX(node) + _nodeRadius(node)*1.5 + _nodeRadius(node)*3;
-    const y2 = _nodeY(node) - _nodeRadius(node)*1.5;
-    const x3 = _nodeX(node) + _nodeRadius(node)*1.5;
-    const y3 = _nodeY(node) + _nodeRadius(node)*1.5;
+    const x0 = _nodeX(node) - _nodeRadius(node)*1.0 - _nodeRadius(node)*3;
+    const y0 = _nodeY(node) + _nodeRadius(node)*1.0;
+    const x1 = _nodeX(node) - _nodeRadius(node)*1.0;
+    const y1 = _nodeY(node) - _nodeRadius(node)*1.0;
+    const x2 = _nodeX(node) + _nodeRadius(node)*1.0 + _nodeRadius(node)*3;
+    const y2 = _nodeY(node) - _nodeRadius(node)*1.0;
+    const x3 = _nodeX(node) + _nodeRadius(node)*1.0;
+    const y3 = _nodeY(node) + _nodeRadius(node)*1.0;
 
     return [{x: x0, y: y0}, {x: x1, y: y1}, {x: x2, y: y2}, {x: x3, y: y3}, {x: x0, y: y0}]
   }
