@@ -2,7 +2,12 @@
 This is an interactive zoomable map for networks clustered with Infomap. We took it and adapted it to multi-layer network data. There are two examples of json files that can be uploaded in this repo - multilayer.json and shai_data.json.
 
 ### How to run the app
-First, you need to run the python server, JsonToFtree using pychram or using the command 'python app.py' on your localhost console, and then 'npm start' to the network-navigator.
+First, you need to run the python server, JsonToFtree using pychram or using the following commands on your localhost console:
+* Run the virtual environment: 'source JsonToFtree/venv/bin/activate'
+* If it's needed install flask and requests packages: 'pip3 install flask\requests'.
+* Run 'python3 app.py'
+
+Then run 'npm install' and 'npm start' in package.json folder to run the network-navigator. (if it's needed install mpm before on your computer).
 
 ## components/LoadNetwork.js
 This is the first component that’s being uploaded. We added the "Load json file" button to uploaded the json file that describe the network. After you choose the one of the json files, the json file sent to a server JsonToFtree which transforms the json file to ftree and sends it back. After the ftree file returns, we are paring it using parseFTree and turn it to an object that can be transformed to a netowrk. After that, the ftree objects are sent to networkFromFtree function that turnes them to a network object and uploads it.
